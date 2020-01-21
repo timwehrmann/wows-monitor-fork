@@ -77,4 +77,25 @@
         'ship message message message message';
     }
   }
+
+  &.xblubbs {
+    grid-template-columns: 25% 1fr 1fr 1fr 1fr;
+    grid-template-rows: repeat(2, 1fr);
+    grid-template-areas:
+      'account-overview account-battles account-wr ship-battles ship-wr'
+      'ship-overview account-dmg account-frags ship-dmg ship-frags';
+
+    &.hidden,
+    &.bot {
+      grid-template-areas:
+        'account-overview message message message message'
+        'ship-overview message message message message';
+    }
+
+    &.no-battles {
+      grid-template-areas:
+        'account-overview account-battles account-wr message message'
+        'ship-overview account-dmg account-frags message message';
+    }
+  }
 }
