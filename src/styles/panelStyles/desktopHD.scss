@@ -84,7 +84,7 @@
 
     &.no-battles {
       grid-template-areas:
-        'account-overview account-battles account-wr ovr-battles message message'
+        'account-overview account-battles account-wr message message'
         'ship-overview account-dmg account-frags message message';
     }
   }
