@@ -120,10 +120,10 @@
   </div>
 
   <div id="ship-dmg">
-    <i class="mdi mdi-flash"></i>&nbsp;<strong [style.color]="player.shipStats?.averageDamageColor | sanitizeCss">{{player.shipStats?.averageDamage | number:'0.0-0'}}</strong>
+    <i class="mdi mdi-flash" [pTooltip]="'Ship: Avg. Damage'"></i>&nbsp;<strong [style.color]="player.shipStats?.averageDamageColor | sanitizeCss">{{player.shipStats?.averageDamage | number:'0.0-0'}}</strong>
   </div>
 
-  <div id="ship-frags">
+  <div id="ship-frags" [pTooltip]="'Ship: Avg. Frags'">
     <i class="mdi mdi-skull"></i>&nbsp;<strong [style.color]="player.shipStats?.averageFragsColor | sanitizeCss">{{player.shipStats?.averageFrags | number:'0.0-1'}}</strong>
   </div>
 
