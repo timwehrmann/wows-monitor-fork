@@ -88,42 +88,42 @@
 
     <span><strong>{{player.name}}</strong></span>
 
-    <span *ngIf="!player.bot && !player.hidden" [pTooltip]="'Karma'" tooltipPosition="above">&nbsp;(<i class="mdi mdi-yin-yang"></i> {{player.karma}})</span>
+    <span *ngIf="!player.bot && !player.hidden" [pTooltip]="'Karma'" tooltipPosition="top">&nbsp;(<i class="mdi mdi-yin-yang"></i> {{player.karma}})</span>
   </div>
 
   <div id="ship-overview">
     <strong>T{{player.shipInfo.tier}}&nbsp;&nbsp;&nbsp;{{player.shipInfo.name}}</strong>
   </div>
 
-  <div id="account-battles" [pTooltip]="'Account: Battles'" tooltipPosition="above">
+  <div id="account-battles" [pTooltip]="'Account: Battles'" tooltipPosition="top">
     <i class="mdi mdi-sword-cross"></i>&nbsp;<strong [style.color]="player.overallStats?.battlesColor | sanitizeCss">{{player.overallStats?.battles}}</strong>
   </div>
 
-  <div id="account-wr" [pTooltip]="'Account: Winrate'" tooltipPosition="above">
+  <div id="account-wr" [pTooltip]="'Account: Winrate'" tooltipPosition="top">
     <i class="mdi mdi-trophy"></i>&nbsp;<strong [style.color]="player.overallStats?.winrateColor | sanitizeCss">{{player.overallStats?.winrate | number:'0.0-2'}}%</strong>
   </div>
 
-  <div id="account-dmg"[pTooltip]="'Account: Avg. Damage'" tooltipPosition="below">
+  <div id="account-dmg" [pTooltip]="'Account: Avg. Damage'" tooltipPosition="bottom">
     <i class="mdi mdi-flash"></i>&nbsp;<strong [style.color]="player.overallStats?.averageDamageColor | sanitizeCss">{{player.overallStats?.averageDamage | number:'0.0-0'}}</strong>
   </div>
 
-  <div id="account-frags"[pTooltip]="'Account: Avg. Frags'" tooltipPosition="below">
+  <div id="account-frags" [pTooltip]="'Account: Avg. Frags'" tooltipPosition="bottom">
     <i class="mdi mdi-skull"></i>&nbsp;<strong [style.color]="player.overallStats?.averageFragsColor | sanitizeCss">{{player.overallStats?.averageFrags | number:'0.0-1'}}</strong>
   </div>
 
-  <div id="ship-battles" [pTooltip]="'Ship: Battles'" tooltipPosition="above">
+  <div id="ship-battles" [pTooltip]="'Ship: Battles'" tooltipPosition="top">
     <i class="mdi mdi-sword-cross"></i>&nbsp;<strong>{{player.shipStats?.battles}}</strong>
   </div>
 
-  <div id="ship-wr" [pTooltip]="'Ship: Avg. Winrate'" tooltipPosition="above">
+  <div id="ship-wr" [pTooltip]="'Ship: Avg. Winrate'" tooltipPosition="top">
     <i class="mdi mdi-trophy"></i>&nbsp;<strong [style.color]="player.shipStats?.winrateColor | sanitizeCss">{{player.shipStats?.winrate | number:'0.0-2'}}%</strong>
   </div>
 
-  <div id="ship-dmg" [pTooltip]="'Ship: Avg. Damage'" tooltipPosition="below">
+  <div id="ship-dmg" [pTooltip]="'Ship: Avg. Damage'" tooltipPosition="bottom">
     <i class="mdi mdi-flash"></i>&nbsp;<strong [style.color]="player.shipStats?.averageDamageColor | sanitizeCss">{{player.shipStats?.averageDamage | number:'0.0-0'}}</strong>
   </div>
 
-  <div id="ship-frags" [pTooltip]="'Ship: Avg. Frags'" tooltipPosition="below">
+  <div id="ship-frags" [pTooltip]="'Ship: Avg. Frags'" tooltipPosition="bottom">
     <i class="mdi mdi-skull"></i>&nbsp;<strong [style.color]="player.shipStats?.averageFragsColor | sanitizeCss">{{player.shipStats?.averageFrags | number:'0.0-1'}}</strong>
   </div>
 
