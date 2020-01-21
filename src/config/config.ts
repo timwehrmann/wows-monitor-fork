@@ -9,7 +9,7 @@ const uuidv4 = require('uuid/v4');
 type PlayerBackgrounds = 'pr' | 'wr' | 'accwr' | 'avgDmg';
 type FontSize = 'small' | 'normal' | 'big' | 'huge';
 type PlayerBackgroundsMode = 'disabled' | 'background' | 'border';
-type LayoutMode = 'normal' | 'compact' | 'legacy';
+type LayoutMode = 'normal' | 'compact' | 'xblubbs' | 'legacy';
 
 export interface ConfigOptions {
   autoUpdate?: boolean;

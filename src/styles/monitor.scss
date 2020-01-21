@@ -210,6 +210,109 @@ app-player {
       }
     }
 
+    #account-overview,
+    #ship-overview,
+    #account-battles,
+    #account-wr,
+    #account-dmg,
+    #account-frags,
+    #ship-battles,
+    #ship-wr,
+    #ship-dmg,
+    #ship-frags {
+      display: none;
+    }
+    #account-overview,
+    #ship-overview {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    #account-overview {
+      grid-area: account-overview;
+    }
+    #ship-overview {
+      grid-area: ship-overview;
+    }
+    #account-battles {
+      grid-area: ship-battles;
+    }
+    #account-wr {
+      grid-area: ship-wr;
+    }
+    #account-dmg {
+      grid-area: ship-dmg;
+    }
+    #account-frags {
+      grid-area: ship-frags;
+    }
+    #ship-battles {
+      grid-area: ship-battles;
+    }
+    #ship-wr {
+      grid-area: ship-wr;
+    }
+    #ship-dmg {
+      grid-area: ship-dmg;
+    }
+    #ship-frags {
+      grid-area: ship-frags;
+    }
+
+    &.xblubbs {
+      #name,
+      #ovr-winrate,
+      #ovr-battles,
+      #karma,
+      #ship,
+      #winrate,
+      #battles,
+      #wins,
+      #pr,
+      #avg-damage,
+      #avg-frags,
+      #avg-xp {
+        display: none !important;
+      }
+
+      &.me,
+      &.player {
+        #account-overview,
+        #ship-overview,
+        #account-battles,
+        #account-wr,
+        #account-dmg,
+        #account-frags,
+        #ship-battles,
+        #ship-wr,
+        #ship-dmg,
+        #ship-frags {
+          display: block;
+        }
+      }
+
+      &.hidden,
+      &.bot {
+        #account-overview,
+        #ship-overview,
+        #message {
+          display: block;
+        }
+      }
+
+      &.no-battles {
+        #account-overview,
+        #ship-overview,
+        #account-battles,
+        #account-wr,
+        #account-dmg,
+        #account-frags,
+        #message {
+          display: block;
+        }
+      }
+    }
+
     @include mobile;
 
     #message {

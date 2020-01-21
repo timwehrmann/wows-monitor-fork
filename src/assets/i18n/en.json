@@ -145,6 +145,7 @@
         "items": {
           "normal": "Normal",
           "compact": "Compact",
+          "xblubbs": "xBlubbs",
           "legacy": "Legacy"
         },
         "summary": "Choose the layout for the player panels. Legacy is like the 'old' monitor. Compact has icons instead of labels."

@@ -41,6 +41,10 @@ export class SettingsComponent extends BaseComponent implements OnInit, OnDestro
       value: 'compact'
     },
     {
+      label: 'settings.appearance.layoutMode.items.xblubbs',
+      value: 'xblubbs'
+    },
+    {
       label: 'settings.appearance.layoutMode.items.legacy',
       value: 'legacy'
     }
