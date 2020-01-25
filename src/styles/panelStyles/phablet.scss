@@ -71,7 +71,6 @@
     }
 
     &.no-battles {
-
       grid-template-areas:
         'name karma ovr-battles ovr-winrate .'
         'ship message message message message';
@@ -82,20 +81,20 @@
     grid-template-columns: 25% 1fr 1fr 1fr 1fr;
     grid-template-rows: repeat(2, 1fr);
     grid-template-areas:
-      'account-overview ship-battles ship-wr account-battles account-wr'
-      'ship-overview ship-dmg ship-frags account-dmg account-frags';
+      'general-stats ship-battles ship-wr account-battles account-wr'
+      'general-stats ship-dmg ship-frags account-dmg account-frags';
 
     &.hidden,
     &.bot {
       grid-template-areas:
-        'account-overview message message message message'
-        'ship-overview message message message message';
+        'general-stats message message message message'
+        'general-stats message message message message';
     }
 
     &.no-battles {
       grid-template-areas:
-        'account-overview message message account-battles account-wr'
-        'ship-overview message message account-dmg account-frags';
+        'general-stats message message account-battles account-wr'
+        'general-stats message message account-dmg account-frags';
     }
   }
 }

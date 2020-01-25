@@ -78,18 +78,26 @@
     </ng-container>
   </div>
 
-  <div id="account-overview">
-    <span *ngIf="player.clan && !cw" [style.color]="player.clan.color | sanitizeCss">
-      <strong>[{{player.clan.tag}}]&nbsp;</strong>
-    </span>
+  <div id="general-stats">
+    <div id="account-clan">
+      <strong *ngIf="player.clan && !cw" [style.color]="player.clan.color | sanitizeCss">
+        [{{player.clan.tag}}]&nbsp;
+      </strong>
+    </div>
 
-    <span><strong>{{player.name}}</strong></span>
+    <div id="account-name">
+      <strong>{{player.name}}</strong>
+      &nbsp;
+      (<app-value-label-mdi *ngIf="!player.bot && !player.hidden" icon="mdi-yin-yang" label="Karma" position="top">{{player.karma}}</app-value-label-mdi>)
+    </div>
 
-    <app-value-label-mdi *ngIf="!player.bot && !player.hidden" icon="mdi-yin-yang" label="Karma" position="top">{{player.karma}}</app-value-label-mdi>
-  </div>
+    <div id="ship-tier">
+      T{{player.shipInfo.tier}}&nbsp;
+    </div>
 
-  <div id="ship-overview">
-    <strong>{{player.shipInfo.name}}</strong>&nbsp;(T{{player.shipInfo.tier}})
+    <div id="ship-name">
+      <strong>{{player.shipInfo.name}}</strong>
+    </div>
   </div>
 
   <div id="account-battles">

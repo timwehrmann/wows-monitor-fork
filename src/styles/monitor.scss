@@ -210,8 +210,7 @@ app-player {
       }
     }
 
-    #account-overview,
-    #ship-overview,
+    #general-stats,
     #account-battles,
     #account-wr,
     #account-dmg,
@@ -221,18 +220,52 @@ app-player {
     #ship-dmg,
     #ship-frags {
       display: none;
+      padding: 0 0.5em;
     }
-    #account-overview,
-    #ship-overview {
+    #account-clan,
+    #account-name,
+    #ship-tier,
+    #ship-name {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
-    #account-overview {
-      grid-area: account-overview;
+
+    @media (min-width: 1440px) {
+      #account-battles,
+      #ship-battles,
+      #account-dmg,
+      #ship-dmg {
+        border-left: 2px solid hsla(0, 0%, 100%, 0.2);
+      }
     }
-    #ship-overview {
-      grid-area: ship-overview;
+    #general-stats {
+      padding: 0;
+      grid-gap: inherit;
+      overflow: inherit;
+      grid-area: general-stats;
+      grid-template-columns: 1fr 3fr;
+      grid-template-rows: repeat(2, 1fr);
+      grid-template-areas:
+        'account-clan account-name'
+        'ship-tier ship-name';
+    }
+    #account-clan,
+    #ship-tier {
+      padding-right: 0.5em;
+      text-align: right;
+    }
+    #account-clan {
+      grid-area: account-clan;
+    }
+    #account-name {
+      grid-area: account-name;
+    }
+    #ship-tier {
+      grid-area: ship-tier;
+    }
+    #ship-name {
+      grid-area: ship-name;
     }
     #account-battles {
       grid-area: account-battles;
@@ -260,6 +293,10 @@ app-player {
     }
 
     &.xblubbs {
+      #general-stats {
+        display: grid;
+      }
+
       #name,
       #ovr-winrate,
       #ovr-battles,
@@ -277,8 +314,10 @@ app-player {
 
       &.me,
       &.player {
-        #account-overview,
-        #ship-overview,
+        #account-clan,
+        #account-name,
+        #account-tier,
+        #account-name,
         #account-battles,
         #account-wr,
         #account-dmg,
@@ -293,16 +332,12 @@ app-player {
 
       &.hidden,
       &.bot {
-        #account-overview,
-        #ship-overview,
         #message {
           display: block;
         }
       }
 
       &.no-battles {
-        #account-overview,
-        #ship-overview,
         #account-battles,
         #account-wr,
         #account-dmg,
