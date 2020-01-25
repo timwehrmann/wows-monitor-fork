@@ -111,7 +111,7 @@
     &.bot {
       grid-template-areas:
         'account-overview message message'
-        '. message message message message'
+        '. message message'
         'ship-overview message message'
         '. message message';
     }
