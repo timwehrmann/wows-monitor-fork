@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { appConfig } from 'src/config/app.config';
+import { Config } from 'src/config/config';
 import { environment } from 'src/environments/environment';
 import ua from 'universal-analytics';
 import { AnalyticsService } from '../../interfaces/analytics.service';
-import { Config } from 'src/config/config';
 import { ElectronService } from './electron.service';
 
 @Injectable()
@@ -12,8 +12,11 @@ export class DesktopGoogleAnalyticsService implements AnalyticsService {
   private visitor: ua.visitor;
   private interval: NodeJS.Timeout;
 
-  constructor(config: Config, private electronService: ElectronService) {
-    config.waitTillLoaded().then(() => this.visitor = ua(environment.gaCode, config.uuid));
+  constructor(private _config: Config, private electronService: ElectronService) {
+    _config.waitTillLoaded().then(() => {
+      this.visitor = ua(environment.gaCode, _config.uuid);
+      setInterval(() => this.send('heartbeat', 'heartbeat', 'heartbeat', 'heartbeat'), 90000);
+    });
   }
 
   config(path: string, title?: string) {
@@ -26,21 +29,25 @@ export class DesktopGoogleAnalyticsService implements AnalyticsService {
     const params = {
       sr: `${windowSize[0]}x${windowSize[1]}`,
       vp: `${display.size.width}x${display.size.height}`
-    };
-
-    if (this.interval) {
-      clearInterval(this.interval);
+    } as any;
+    if (this._config.anonymIp) {
+      params.aip = 1;
     }
+
     this.visitor
       .screenview(path, appConfig.applicationName, appConfig.version, appConfig.version, appConfig.version, params, () => { }).send();
-    this.interval = setInterval(() => {
-      this.visitor
-        .screenview(path, appConfig.applicationName, appConfig.version, appConfig.version, appConfig.version, params, () => { }).send();
-    }, 30000);
   }
 
   exception(error: string) {
-    this.visitor.exception(error);
+    if (!this.visitor) { return; }
+    const params = {
+      exd: error
+    } as any;
+
+    if (this._config.anonymIp) {
+      params.aip = 1;
+    }
+    this.visitor.exception(params);
   }
 
   send(
@@ -50,6 +57,10 @@ export class DesktopGoogleAnalyticsService implements AnalyticsService {
     eventLabel?: string,
     eventValue?: number) {
     if (!this.visitor) { return; }
-    this.visitor.event(eventCategory, eventAction, eventLabel, eventValue).send();
+    const params = {} as any;
+    if (this._config.anonymIp) {
+      params.aip = 1;
+    }
+    this.visitor.event(eventCategory, eventAction, eventLabel, eventValue, params, null).send();
   }
 }

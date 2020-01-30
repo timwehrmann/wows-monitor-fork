@@ -1,0 +1,11 @@
+<app-match-item-team id="left" [season]="match.season" [clan]="normal ? match.winner : match.looser"
+  [entry]="normal ? match.winnerEntry : match.looserEntry"></app-match-item-team>
+<div id="center">
+  <img *ngIf="match.primeTime" class="region"
+    src="assets/region-{{match.primeTime | prime2Region:match.season }}.svg" />
+  <span class="vs">vs</span>
+  <span class="date">{{match.date | date:'d.M.yy H:mm:ss'}}</span>
+  <strong class="estimated" *ngIf="match.estimated">Estimated</strong>
+</div>
+<app-match-item-team id="right" [season]="match.season" [clan]="normal ? match.looser : match.winner"
+  [entry]="normal ? match.looserEntry : match.winnerEntry" [right]="true"></app-match-item-team>

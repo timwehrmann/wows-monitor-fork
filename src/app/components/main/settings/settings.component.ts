@@ -7,6 +7,7 @@ import { skip, switchMap } from 'rxjs/operators';
 import { ElectronService } from 'src/app/services/desktop/electron.service';
 import { Config } from 'src/config/config';
 import { BaseComponent } from '../../base.component';
+import { ScrollService } from 'src/app/services/scroll.service';
 
 @Component({
   selector: 'app-settings',
@@ -15,6 +16,8 @@ import { BaseComponent } from '../../base.component';
 export class SettingsComponent extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
 
   faDesktop = faDesktop;
+
+  showExaplanationDialog = false;
 
   fontSizeOptions: SelectItem[] = [
     {
@@ -105,7 +108,8 @@ export class SettingsComponent extends BaseComponent implements OnInit, OnDestro
 
   constructor(public config: Config,
     @Optional() private electronService: ElectronService,
-    private activatedRoute: ActivatedRoute) {
+    private activatedRoute: ActivatedRoute,
+    private scrollService: ScrollService) {
     super();
   }
 
@@ -124,9 +128,7 @@ export class SettingsComponent extends BaseComponent implements OnInit, OnDestro
       .pipe(this.untilDestroy())
       .subscribe(params => {
         if (params.goto) {
-          const scrollView = document.getElementsByClassName('ui-scrollpanel-content')[0];
-          const el = document.getElementById(params.goto);
-          setTimeout(() => scrollView.scrollTo({ top: el.offsetTop }), 0);
+          this.scrollService.scrollToAnchor(params.goto);
         }
       });
   }

@@ -12,6 +12,10 @@ import { WowsNumbersPipe } from './pipes/wows-numbers.pipe';
 import { SanitizeHtmlPipe } from './pipes/sanitize-html.pipe';
 import { ExternalLinkDirective } from './directives/external-link.directive';
 import { ReplaceWhitespacePipe } from './pipes/replace-whitespaces.pipe';
+import { AddPlusPipe } from './pipes/add-plus.pipe';
+import { ResolveClansPipe } from './pipes/resolve-clans.pipe';
+import { ShowOnScrollDirective } from './directives/show-on-scroll.directive';
+import { Primetime2RegionPipe } from './pipes/primetime-region.pipe';
 
 @NgModule({
   declarations: [
@@ -20,6 +24,7 @@ import { ReplaceWhitespacePipe } from './pipes/replace-whitespaces.pipe';
     ShowMenuEntryDirective,
     ShowOnDirective,
     ExternalLinkDirective,
+    ShowOnScrollDirective,
     JoinPipe,
     MatchGroupPipe,
     SanitizeCssPipe,
@@ -27,7 +32,10 @@ import { ReplaceWhitespacePipe } from './pipes/replace-whitespaces.pipe';
     RegionPipe,
     ReplaceWhitespacePipe,
     RomanPipe,
-    WowsNumbersPipe
+    WowsNumbersPipe,
+    AddPlusPipe,
+    ResolveClansPipe,
+    Primetime2RegionPipe
   ],
   exports: [
     IsDesktopDirective,
@@ -35,6 +43,7 @@ import { ReplaceWhitespacePipe } from './pipes/replace-whitespaces.pipe';
     ShowMenuEntryDirective,
     ShowOnDirective,
     ExternalLinkDirective,
+    ShowOnScrollDirective,
     JoinPipe,
     MatchGroupPipe,
     SanitizeCssPipe,
@@ -42,7 +51,10 @@ import { ReplaceWhitespacePipe } from './pipes/replace-whitespaces.pipe';
     RegionPipe,
     ReplaceWhitespacePipe,
     RomanPipe,
-    WowsNumbersPipe
+    WowsNumbersPipe,
+    AddPlusPipe,
+    ResolveClansPipe,
+    Primetime2RegionPipe
   ],
   imports: [],
   providers: []

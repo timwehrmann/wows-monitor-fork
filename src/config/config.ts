@@ -1,8 +1,10 @@
 import { Inject, Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, from, interval, Observable } from 'rxjs';
 import { share, skipWhile, take } from 'rxjs/operators';
+import { ClanWarsConfig, defaultClanWarsConfig } from 'src/app/interfaces/clanwars-config';
 import { ConfigService, ConfigServiceToken } from 'src/app/interfaces/config.service';
-import { ConfigtoolConfig, defaultConfigtoolConfig } from 'src/app/interfaces/configtool-config.interface';
+import { ConfigtoolConfig, defaultConfigtoolConfig } from 'src/app/interfaces/configtool-config';
+import { defaultLivefeedConfig, LivefeedConfig } from 'src/app/interfaces/livefeed-config';
 import { environment } from 'src/environments/environment';
 const uuidv4 = require('uuid/v4');
 
@@ -14,9 +16,13 @@ type TeamWinrate = 'average' | 'weighted' | 'median';
 
 export interface ConfigOptions {
   autoUpdate?: boolean;
+  analyticsInfoSeen?: boolean;
+  anonymIp?: boolean;
+  enableAnalytics?: boolean;
   allowBeta?: boolean;
   signalRToken?: string;
   selectedDirectory?: string;
+  mainClient?: string;
   layoutMode?: LayoutMode;
   playerBackgrounds?: PlayerBackgrounds;
   playerBackgroundsMode?: PlayerBackgroundsMode;
@@ -29,10 +35,15 @@ export interface ConfigOptions {
   closeToTray?: boolean;
   uuid?: string;
   configtoolConfig?: ConfigtoolConfig;
+  livefeedConfig?: LivefeedConfig;
+  clanWarsConfig?: ClanWarsConfig;
 }
 
 export const defaultConfig: ConfigOptions = {
   autoUpdate: true,
+  analyticsInfoSeen: false,
+  anonymIp: false,
+  enableAnalytics: true,
   layoutMode: 'normal',
   playerBackgrounds: 'pr',
   playerBackgroundsMode: 'background',
@@ -41,7 +52,9 @@ export const defaultConfig: ConfigOptions = {
   teamWinrate: 'average',
   seenChangelogs: [],
   uuid: environment.desktop ? uuidv4() : '',
-  configtoolConfig: defaultConfigtoolConfig
+  configtoolConfig: defaultConfigtoolConfig,
+  livefeedConfig: defaultLivefeedConfig,
+  clanWarsConfig: defaultClanWarsConfig
 };
 
 @Injectable()
@@ -53,9 +66,13 @@ export class Config implements ConfigOptions {
       this.ensureValues(config);
 
       this.autoUpdate = config.autoUpdate;
+      this.analyticsInfoSeen = config.analyticsInfoSeen;
+      this.anonymIp = config.anonymIp;
+      this.enableAnalytics = config.enableAnalytics;
       this.allowBeta = config.allowBeta;
       this.signalRToken = config.signalRToken;
       this.selectedDirectory = config.selectedDirectory;
+      this.mainClient = config.mainClient;
       this.layoutMode = config.layoutMode;
       this.playerBackgrounds = config.playerBackgrounds;
       this.playerBackgroundsMode = config.playerBackgroundsMode;
@@ -68,6 +85,8 @@ export class Config implements ConfigOptions {
       this.closeToTray = config.closeToTray;
       this._uuid = config.uuid;
       this.configtoolConfig = config.configtoolConfig;
+      this.livefeedConfig = config.livefeedConfig;
+      this.clanWarsConfig = config.clanWarsConfig;
 
       this.loaded = true;
 
@@ -76,6 +95,8 @@ export class Config implements ConfigOptions {
 
     this._$settingChanged = combineLatest([
       this.$autoUpdate,
+      this.$anonymIp,
+      this.$enableAnalytics,
       this.$allowBeta,
       this.$layoutMode,
       this.$playerBackgrounds,
@@ -85,7 +106,9 @@ export class Config implements ConfigOptions {
       this.$useColoredValues,
       this.$teamWinrate,
       this.$overwriteReplaysDirectory,
-      this.$closeToTray
+      this.$closeToTray,
+      this.$livefeedConfig,
+      this.$clanWarsConfig
     ]).pipe(share());
   }
 
@@ -93,9 +116,13 @@ export class Config implements ConfigOptions {
     await this.waitTillLoaded();
     return from(this.configService.save({
       autoUpdate: this._autoUpdate,
+      analyticsInfoSeen: this._analyticsInfoSeen,
+      anonymIp: this._anonymIp,
+      enableAnalytics: this._enableAnalytics,
       allowBeta: this._allowBeta,
       signalRToken: this._signalRToken,
       selectedDirectory: this._selectedDirectory,
+      mainClient: this._mainClient,
       layoutMode: this._layoutMode,
       playerBackgrounds: this._playerBackgrounds,
       playerBackgroundsMode: this.playerBackgroundsMode,
@@ -107,7 +134,9 @@ export class Config implements ConfigOptions {
       seenChangelogs: this._seenChangelogs,
       closeToTray: this._closeToTray,
       uuid: this._uuid,
-      configtoolConfig: this._configtoolConfig
+      configtoolConfig: this._configtoolConfig,
+      livefeedConfig: this._livefeedConfig,
+      clanWarsConfig: this.clanWarsConfig
     }));
   }
 
@@ -116,6 +145,9 @@ export class Config implements ConfigOptions {
       if (config[key] == null || config[key] === undefined) {
         config[key] = defaultConfig[key];
       }
+    }
+    if (!config.mainClient) {
+      config.mainClient = config.selectedDirectory;
     }
   }
 
@@ -134,6 +166,57 @@ export class Config implements ConfigOptions {
 
   get $autoUpdate() {
     return this._$autoUpdate.asObservable();
+  }
+
+  // analyticsInfoSeen
+  private _analyticsInfoSeen: boolean;
+  private _$analyticsInfoSeen = new BehaviorSubject<boolean>(null);
+
+  get analyticsInfoSeen() {
+    return this._analyticsInfoSeen;
+  }
+
+  set analyticsInfoSeen(value) {
+    this._analyticsInfoSeen = value;
+    this._$analyticsInfoSeen.next(value);
+  }
+
+  get $analyticsInfoSeen() {
+    return this._$analyticsInfoSeen.asObservable();
+  }
+
+  // anonymIp
+  private _anonymIp: boolean;
+  private _$anonymIp = new BehaviorSubject<boolean>(null);
+
+  get anonymIp() {
+    return this._anonymIp;
+  }
+
+  set anonymIp(value) {
+    this._anonymIp = value;
+    this._$anonymIp.next(value);
+  }
+
+  get $anonymIp() {
+    return this._$anonymIp.asObservable();
+  }
+
+  // anonymIp
+  private _enableAnalytics: boolean;
+  private _$enableAnalytics = new BehaviorSubject<boolean>(null);
+
+  get enableAnalytics() {
+    return this._enableAnalytics;
+  }
+
+  set enableAnalytics(value) {
+    this._enableAnalytics = value;
+    this._$enableAnalytics.next(value);
+  }
+
+  get $enableAnalytics() {
+    return this._$enableAnalytics.asObservable();
   }
 
   // allowBeta
@@ -185,6 +268,23 @@ export class Config implements ConfigOptions {
 
   get $selectedDirectory() {
     return this._$selectedDirectory.asObservable();
+  }
+
+  // SelectedDirectory
+  private _mainClient: string;
+  private _$mainClient = new BehaviorSubject<string>(null);
+
+  get mainClient() {
+    return this._mainClient;
+  }
+
+  set mainClient(value) {
+    this._mainClient = value;
+    this._$mainClient.next(value);
+  }
+
+  get $mainClient() {
+    return this._$mainClient.asObservable();
   }
 
   // layoutMode
@@ -383,6 +483,40 @@ export class Config implements ConfigOptions {
     return this._$configtoolConfig.asObservable();
   }
 
+  //liveFeedConfig
+  private _livefeedConfig: LivefeedConfig;
+  private _$livefeedConfig = new BehaviorSubject<LivefeedConfig>(null);
+
+  get livefeedConfig() {
+    return this._livefeedConfig;
+  }
+
+  set livefeedConfig(value) {
+    this._livefeedConfig = value;
+    this._$livefeedConfig.next(value);
+  }
+
+  get $livefeedConfig() {
+    return this._$livefeedConfig.asObservable();
+  }
+
+  //ClanWarsConfig
+  private _clanWarsConfig: ClanWarsConfig;
+  private _$clanWarsConfig = new BehaviorSubject<ClanWarsConfig>(null);
+
+  get clanWarsConfig() {
+    return this._clanWarsConfig;
+  }
+
+  set clanWarsConfig(value) {
+    this._clanWarsConfig = value;
+    this._$clanWarsConfig.next(value);
+  }
+
+  get $clanWarsConfig() {
+    return this._$clanWarsConfig.asObservable();
+  }
+
   private _uuid: string;
 
   get uuid() {
@@ -411,15 +545,5 @@ export class Config implements ConfigOptions {
       skipWhile(() => !this.loaded),
       take(1)).toPromise();
     return true;
-  }
-
-  private applyPlayerBackgroundsMigration(value: any) {
-    if (value === false) {
-      return 'off';
-    }
-    if (value) {
-      return value;
-    }
-    return 'pr';
   }
 }

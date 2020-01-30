@@ -1,8 +1,10 @@
 import { AfterViewInit, Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { DialogService } from 'primeng/api';
-import { ApiService } from 'src/app/services/api.service';
+import { ChangelogService } from 'src/app/generated/services';
 import { Config } from 'src/config/config';
 import { BaseComponent } from '../base.component';
+import { AnalyticsInfoComponent } from './analytics-info/analytics-info.component';
 import { ChangelogComponent } from './changelogs/changelog/changelog.component';
 
 @Component({
@@ -11,15 +13,35 @@ import { ChangelogComponent } from './changelogs/changelog/changelog.component';
 })
 export class MainComponent extends BaseComponent implements AfterViewInit {
 
-  constructor(private apiService: ApiService,
+  constructor(private changelogsService: ChangelogService,
     private config: Config,
-    private dialogService: DialogService) {
+    private dialogService: DialogService,
+    private router: Router) {
     super();
   }
 
   async ngAfterViewInit() {
     await this.config.waitTillLoaded();
-    this.apiService.changelogLatest()
+    if (!this.config.analyticsInfoSeen) {
+      this.showAnalyticsInfo();
+    } else {
+      this.showChangelogs();
+    }
+  }
+
+  showAnalyticsInfo() {
+    const ref = this.dialogService.open(AnalyticsInfoComponent, {
+      styleClass: 'custom-popup ' + (this.isDesktop ? 'desktop' : 'browser'),
+      closable: false,
+      header: this.translateService.instant('analytics.dialogHeader'),
+    });
+    ref.onClose.pipe(this.untilDestroy()).subscribe(() => {
+      this.showChangelogs();
+    });
+  }
+
+  showChangelogs() {
+    this.changelogsService.changelogLatest()
       .pipe(this.untilDestroy())
       .subscribe(changelog => {
         if (!this.config.seenChangelogs || !this.config.seenChangelogs.some(id => id == changelog.id)) {

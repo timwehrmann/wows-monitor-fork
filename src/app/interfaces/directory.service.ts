@@ -1,6 +1,6 @@
 import { InjectionToken } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Region } from './region';
+import { Region } from '../generated/models';
 
 export const DirectoryServiceToken = new InjectionToken('directory-service');
 export type PathBase = 'CWD' | 'EXE_PATH';
@@ -12,7 +12,6 @@ export interface DirectoryService {
   $changeDetected: Observable<string>;
   $status: Observable<DirectoryStatus>;
 
-  changePath(path: string): void;
   refresh(): void;
   getResFolderPath(basePath: string, status?: DirectoryStatus): Promise<string>;
 }

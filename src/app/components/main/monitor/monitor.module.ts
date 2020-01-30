@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { TranslateModule } from '@ngx-translate/core';
 import { CardModule } from 'primeng/card';
 import { ContextMenuModule } from 'primeng/contextmenu';
@@ -14,7 +15,6 @@ import { PlayerComponent } from './player/player.component';
 import { ValueLabelComponent } from './player/value-label/value-label.component';
 import { ValueLabelMdiComponent } from './player/value-label-mdi/value-label-mdi.component';
 import { TeamComponent } from './team/team.component';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 
 @NgModule({

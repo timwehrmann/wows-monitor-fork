@@ -2,23 +2,27 @@ import { Inject, Injectable } from '@angular/core';
 import { HubConnection, HubConnectionBuilder, LogLevel } from '@aspnet/signalr';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
-import { SignalrService, SignalrStatus, Status } from 'src/app/interfaces/signalr.service';
+import { SignalrService, SignalrSettings, SignalrStatus, Status } from 'src/app/interfaces/signalr.service';
 import { appConfig } from 'src/config/app.config';
 import { Config } from 'src/config/config';
 import { environment } from 'src/environments/environment';
-import { LoggerService, LoggerServiceToken } from '../interfaces/logger.service';
-import { ApiService } from './api.service';
 import { BaseInjection } from '../components/base.component';
+import { LivefeedItem, MatchInfo } from '../generated/models';
+import { QrService } from '../generated/services';
+import { LoggerService, LoggerServiceToken } from '../interfaces/logger.service';
 
 @Injectable()
 export class CommonSignalrService extends BaseInjection implements SignalrService {
 
   private connection: HubConnection;
+  private _settings: SignalrSettings;
   private _$socketStatus = new BehaviorSubject<SignalrStatus>(SignalrStatus.None);
   private _$status = new BehaviorSubject<Status>(Status.Idle);
-  private _$info = new BehaviorSubject<any>(null);
+  private _$info = new BehaviorSubject<MatchInfo>(null);
   private _$error = new Subject<string>();
   private _$clients = new BehaviorSubject<number>(0);
+  private _$livefeedUpdate = new BehaviorSubject<LivefeedItem[]>([]);
+
 
 
   get $socketStatus(): Observable<SignalrStatus> {
@@ -29,7 +33,7 @@ export class CommonSignalrService extends BaseInjection implements SignalrServic
     return this._$status.asObservable();
   }
 
-  get $info(): Observable<any> {
+  get $info(): Observable<MatchInfo> {
     return this._$info.asObservable();
   }
 
@@ -44,10 +48,14 @@ export class CommonSignalrService extends BaseInjection implements SignalrServic
     return this._$clients.asObservable();
   }
 
+  get $livefeedUpdate(): Observable<LivefeedItem[]> {
+    return this._$livefeedUpdate.asObservable();
+  }
+
   constructor(
     private config: Config,
     @Inject(LoggerServiceToken) private loggerService: LoggerService,
-    private apiService: ApiService
+    private qrService: QrService
   ) {
     super();
   }
@@ -55,21 +63,21 @@ export class CommonSignalrService extends BaseInjection implements SignalrServic
   async init() {
 
     // Url Param Testing
-    let url = environment.apiUrl + appConfig.hub;
+    let url = environment.apiUrl + appConfig.hub + '?host=' + (environment.desktop ? 'true' : 'false');
     await this.config.waitTillLoaded();
     let token = this.config.signalRToken;
     if (!token) {
       if (environment.desktop) {
-        token = await this.apiService.token().toPromise();
+        token = await this.qrService.qrToken().toPromise();
         this.config.signalRToken = token;
         this.config.save();
       }
     }
 
-    url += '?host=' + (environment.desktop ? 'true' : 'false');
-    if (token) {
-      url += '&token=' + token;
-    }
+    this._settings = {
+      token: this.config.signalRToken,
+      liveUpdate: this.config.livefeedConfig.liveUpdate
+    };
 
     this.connection = new HubConnectionBuilder()
       .withUrl(url)
@@ -122,6 +130,10 @@ export class CommonSignalrService extends BaseInjection implements SignalrServic
       this._$status.next(Status.Idle);
     });
 
+    this.connection.on('LivefeedUpdate', (items: LivefeedItem[]) => {
+      this._$livefeedUpdate.next(items);
+    });
+
     this.connection.onclose((error) => {
       this._$socketStatus.next(SignalrStatus.Disconnected);
     });
@@ -133,6 +145,7 @@ export class CommonSignalrService extends BaseInjection implements SignalrServic
         try {
           this.connection.start()
             .then(() => {
+              this.sendSettings(this._settings);
               resolve(true);
             })
             .catch((error) => {
@@ -172,8 +185,13 @@ export class CommonSignalrService extends BaseInjection implements SignalrServic
     });
   }
 
-  async connectToHost() {
-    await this.connection.send('ConnectToHost', this.config.signalRToken);
+  async sendSettings(settings?: SignalrSettings) {
+    if (settings) {
+      for (const key of Object.keys(settings)) {
+        this._settings[key] = settings[key];
+      }
+    }
+    await this.connection.send('SendSettings', { ...this._settings, sendToken: settings != null && settings.token != null });
   }
 
   resetInfo() {
