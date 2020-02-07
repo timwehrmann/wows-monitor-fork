@@ -87,8 +87,10 @@
 
     <div id="account-name">
       <strong>{{player.name}}</strong>
-      &nbsp;
-      (<app-value-label-mdi *ngIf="!player.bot && !player.hidden" icon="mdi-yin-yang" label="Karma" position="top">{{player.karma}}</app-value-label-mdi>)
+      <span id="account-karma">
+        &nbsp;
+        (<app-value-label-mdi *ngIf="!player.bot && !player.hidden" icon="mdi-yin-yang" label="Karma" position="top">{{player.karma}}</app-value-label-mdi>)
+      </span>
     </div>
 
     <div id="ship-tier">

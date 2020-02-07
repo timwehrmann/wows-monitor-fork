@@ -335,15 +335,22 @@ app-player {
         #message {
           display: block;
         }
+
+        #account-karma {
+          display: none;
+        }
       }
 
       &.no-battles {
-        #account-battles,
-        #account-wr,
-        #account-dmg,
-        #account-frags,
         #message {
           display: block;
+        }
+
+        #ship-battles,
+        #ship-wr,
+        #ship-dmg,
+        #ship-frags {
+          display: none;
         }
       }
     }
