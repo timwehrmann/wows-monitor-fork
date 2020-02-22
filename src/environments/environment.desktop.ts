@@ -5,5 +5,6 @@ export const environment: Environment = {
   browser: false,
   desktop: true,
   apiUrl: 'http://localhost:5000',
-  gaCode: 'UA-151253199-8'
+  gaCode: 'UA-151253199-8',
+  appUrl: 'http://localhost:4201'
 };

@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, Inject, OnDestroy, ViewChild } from '@angular/core';
 import { faQrcode, faWifi } from '@fortawesome/free-solid-svg-icons';
-import { DialogService } from 'primeng/api';
+import { DialogService } from 'primeng/dynamicdialog';
 import { OverlayPanel } from 'primeng/overlaypanel';
 import { map, take, pairwise, distinctUntilChanged } from 'rxjs/operators';
 import { BaseComponent } from 'src/app/components/base.component';
@@ -49,7 +49,13 @@ export class ConnectionComponent extends BaseComponent implements AfterViewInit,
   ngAfterViewInit() {
     this.signalrService.init().then(() => this.connect());
 
-    this.signalrService.$error.pipe(this.untilDestroy()).subscribe(error => this.uiError('serviceError'));
+    this.signalrService.$error.pipe(this.untilDestroy()).subscribe(error => {
+      if (error.startsWith('apiError')) {
+        this.uiError(error);
+      } else {
+        this.uiError('apiError.unknown');
+      }
+    });
 
     if (this.isDesktop) {
       this.signalrService.$clients.pipe(this.untilDestroy(), pairwise(), distinctUntilChanged()).subscribe(nums => {
@@ -83,9 +89,9 @@ export class ConnectionComponent extends BaseComponent implements AfterViewInit,
         return;
       }
       if (this.isDesktop) {
-        this.dialogService.open(QrComponent, { styleClass: 'qrPopup custopm-popup desktop', showHeader: false, dismissableMask: true });
+        this.dialogService.open(QrComponent, { styleClass: 'qrPopup custom-popup desktop', showHeader: false, dismissableMask: true });
       } else {
-        this.dialogService.open(QrScanComponent, { styleClass: 'qrPopup custopm-popup browser', showHeader: false, dismissableMask: true });
+        this.dialogService.open(QrScanComponent, { styleClass: 'qrPopup custom-popup browser', showHeader: false, dismissableMask: true });
       }
     });
   }
