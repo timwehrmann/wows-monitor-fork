@@ -15,6 +15,7 @@
   ],
   "generateUpdatesFilesForAllChannels": true,
   "win": {
+    "publisherName": ["Benjamin Heilmann"],
     "icon": "dist/app-desktop/assets/icons",
     "target": [
       {

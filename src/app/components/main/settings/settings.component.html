@@ -9,7 +9,7 @@
     <h2>{{ 'settings.header' | translate}}</h2>
     <section>
       <h3>{{ 'settings.general.title' | translate }}</h3>
-      <article>
+      <article *isDesktop>
         <caption>
           {{ 'settings.general.autoUpdate.caption' | translate }}
         </caption>
@@ -20,7 +20,7 @@
           <p-inputSwitch [(ngModel)]="config.autoUpdate"></p-inputSwitch>
         </div>
       </article>
-      <!-- <article>
+      <article *isDesktop>
         <caption>
           {{ 'settings.general.allowBeta.caption' | translate }}
         </caption>
@@ -30,7 +30,7 @@
         <div class="input-wrap">
           <p-inputSwitch [(ngModel)]="config.allowBeta"></p-inputSwitch>
         </div>
-      </article> -->
+      </article>
       <article *isBrowser>
         <caption>
           {{ 'settings.general.enableAnalytics.caption' | translate }}
@@ -167,10 +167,11 @@
           <a (click)="showExaplanationDialog = true">{{'settings.appearance.teamWinrate.explanation' | translate}}</a>
         </summary>
         <p-dialog [header]="'settings.appearance.teamWinrate.explanation' | translate"
-          [(visible)]="showExaplanationDialog" [style]="{'max-width': '600px'}" [modal]="true" appendTo="body">
+          [(visible)]="showExaplanationDialog" [style]="{'max-width': '600px'}" [modal]="true">
           <p externalLink>
             <strong>Average (Mean) and Median</strong> <br />
-            <a href="https://www.purplemath.com/modules/meanmode.htm">https://www.purplemath.com/modules/meanmode.htm</a>
+            <a
+              href="https://www.purplemath.com/modules/meanmode.htm">https://www.purplemath.com/modules/meanmode.htm</a>
           </p>
           <p>
             <strong>Weighted</strong> <br />

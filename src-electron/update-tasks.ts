@@ -5,16 +5,17 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 export function initUpdater(logger: electronLogger.ElectronLog, win: BrowserWindow, isDebug: boolean) {
-  const allowBeta = true;
-  const configPath = isDebug ? path.join(process.env.APPDATA, '@wows-monitor', 'config.json') : 'config.json';
+  let allowBeta = false;
+  const configPath = !isDebug ? path.join(process.env.APPDATA, '@wows-monitor', 'config.json') : 'config.json';
   if (fs.existsSync(configPath)) {
     const config = fs.readFileSync(configPath, { encoding: 'utf-8' });
-    // allowBeta = JSON.parse(config).allowBeta;
+    allowBeta = JSON.parse(config).allowBeta;
+  } else {
   }
 
   autoUpdater.autoDownload = false;
   autoUpdater.autoInstallOnAppQuit = false;
-  autoUpdater.channel = allowBeta ? 'beta' : 'release';
+  autoUpdater.channel = allowBeta ? 'beta' : 'latest';
 
   ipcMain.on('checkForUpdate', (event, args) => {
     logger.debug('[Electron]', '(checkForUpdate)');

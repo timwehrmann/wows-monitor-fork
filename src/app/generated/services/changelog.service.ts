@@ -33,12 +33,14 @@ export class ChangelogService extends BaseService {
    * This method doesn't expect any request body.
    */
   changelogLatest$Response(params?: {
+    channel?: null | string;
 
   }): Observable<StrictHttpResponse<ChangelogResponse>> {
 
     const rb = new RequestBuilder(this.rootUrl, ChangelogService.ChangelogLatestPath, 'get');
     if (params) {
 
+      rb.query('channel', params.channel);
 
     }
     return this.http.request(rb.build({
@@ -59,6 +61,7 @@ export class ChangelogService extends BaseService {
    * This method doesn't expect any request body.
    */
   changelogLatest(params?: {
+    channel?: null | string;
 
   }): Observable<ChangelogResponse> {
 
@@ -79,12 +82,14 @@ export class ChangelogService extends BaseService {
    * This method doesn't expect any request body.
    */
   changelogIds$Response(params?: {
+    channel?: null | string;
 
   }): Observable<StrictHttpResponse<Array<number>>> {
 
     const rb = new RequestBuilder(this.rootUrl, ChangelogService.ChangelogIdsPath, 'get');
     if (params) {
 
+      rb.query('channel', params.channel);
 
     }
     return this.http.request(rb.build({
@@ -105,6 +110,7 @@ export class ChangelogService extends BaseService {
    * This method doesn't expect any request body.
    */
   changelogIds(params?: {
+    channel?: null | string;
 
   }): Observable<Array<number>> {
 
@@ -125,12 +131,14 @@ export class ChangelogService extends BaseService {
    * This method doesn't expect any request body.
    */
   changelogList$Response(params?: {
+    channel?: null | string;
 
   }): Observable<StrictHttpResponse<Array<ChangelogResponse>>> {
 
     const rb = new RequestBuilder(this.rootUrl, ChangelogService.ChangelogListPath, 'get');
     if (params) {
 
+      rb.query('channel', params.channel);
 
     }
     return this.http.request(rb.build({
@@ -151,6 +159,7 @@ export class ChangelogService extends BaseService {
    * This method doesn't expect any request body.
    */
   changelogList(params?: {
+    channel?: null | string;
 
   }): Observable<Array<ChangelogResponse>> {
 
