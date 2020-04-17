@@ -79,21 +79,23 @@
     </ng-container>
   </div>
 
-  <div id="general-stats">
+  <div id="account-title">
     <div id="account-clan">
-      <strong *ngIf="player.clan && !cw" [style.color]="player.clan.color | sanitizeCss">
-        [{{player.clan.tag}}]&nbsp;
-      </strong>
+      <span *ngIf="player.clan && !cw" [style.color]="player.clan.color | sanitizeCss">
+        [{{player.clan.tag}}]
+      </span>
     </div>
 
     <div id="account-name">
-      <strong>{{player.name}}</strong>
+      {{player.name}}
       <span id="account-karma">
         &nbsp;
         (<app-value-label-mdi *ngIf="!player.bot && !player.hidden" icon="mdi-yin-yang" label="Karma" position="top">{{player.karma}}</app-value-label-mdi>)
       </span>
     </div>
+  </div>
 
+  <div id="ship-title">
     <div id="ship-tier">
       T{{player.shipInfo.tier}}&nbsp;
     </div>

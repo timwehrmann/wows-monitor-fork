@@ -210,7 +210,8 @@ app-player {
       }
     }
 
-    #general-stats,
+    #account-title,
+    #ship-title,
     #account-battles,
     #account-wr,
     #account-dmg,
@@ -239,16 +240,20 @@ app-player {
         border-left: 2px solid hsla(0, 0%, 100%, 0.2);
       }
     }
-    #general-stats {
-      padding: 0;
+    #account-title,
+    #ship-title {
       grid-gap: inherit;
       overflow: inherit;
-      grid-area: general-stats;
-      grid-template-columns: 1fr 3fr;
-      grid-template-rows: repeat(2, 1fr);
-      grid-template-areas:
-        'account-clan account-name'
-        'ship-tier ship-name';
+      grid-template-columns: min-content auto;
+      grid-template-rows: 1fr;
+    }
+    #account-title {
+      grid-area: account-title;
+      grid-template-areas: 'account-clan account-name';
+    }
+    #ship-title {
+      grid-area: ship-title;
+      grid-template-areas: 'ship-tier ship-name';
     }
     #account-clan,
     #ship-tier {
@@ -293,7 +298,8 @@ app-player {
     }
 
     &.xblubbs {
-      #general-stats {
+      #account-title,
+      #ship-title {
         display: grid;
       }
 

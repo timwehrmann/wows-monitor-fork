@@ -76,25 +76,4 @@
         'ship message message message message';
     }
   }
-
-  &.xblubbs {
-    grid-template-columns: 25% 1fr 1fr 1fr 1fr;
-    grid-template-rows: repeat(2, 1fr);
-    grid-template-areas:
-      'general-stats ship-battles ship-wr account-battles account-wr'
-      'general-stats ship-dmg ship-frags account-dmg account-frags';
-
-    &.hidden,
-    &.bot {
-      grid-template-areas:
-        'general-stats message message message message'
-        'general-stats message message message message';
-    }
-
-    &.no-battles {
-      grid-template-areas:
-        'general-stats message message account-battles account-wr'
-        'general-stats message message account-dmg account-frags';
-    }
-  }
 }
