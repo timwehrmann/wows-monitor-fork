@@ -365,8 +365,10 @@ app-player {
 
     #message {
       grid-area: message;
+      margin: auto 0;
+      text-align: left;
       display: none;
-      margin: auto;
+      padding: 0 0.5em;
     }
 
     #name {

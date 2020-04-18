@@ -76,4 +76,33 @@
         'ship message message message message';
     }
   }
+
+  &.xblubbs {
+    font-size: 0.9em;
+    grid-gap: 0.25rem;
+    padding: 5px 0;
+    line-height: 1rem !important;
+
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    grid-template-areas:
+      'account-title account-title ship-title ship-title'
+      'account-battles account-wr ship-battles ship-wr'
+      'account-dmg account-frags ship-dmg ship-frags';
+
+    &.hidden,
+    &.bot {
+      grid-template-areas:
+        'account-title account-title ship-title ship-title'
+        'message message message message'
+        'message message message message';
+    }
+
+    &.no-battles {
+      grid-template-areas:
+        'account-title account-title ship-title ship-title'
+        'account-battles account-wr message message'
+        'account-dmg account-frags message message';
+    }
+  }
 }

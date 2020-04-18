@@ -80,8 +80,8 @@
   </div>
 
   <div id="account-title">
-    <div id="account-clan">
-      <span *ngIf="player.clan && !cw" [style.color]="player.clan.color | sanitizeCss">
+    <div id="account-clan" *ngIf="player.clan && !cw">
+      <span [style.color]="player.clan.color | sanitizeCss">
         [{{player.clan.tag}}]
       </span>
     </div>
@@ -101,7 +101,7 @@
     </div>
 
     <div id="ship-name">
-      <strong>{{player.shipInfo.name}}</strong>
+      {{player.shipInfo.name}}
     </div>
   </div>
 
