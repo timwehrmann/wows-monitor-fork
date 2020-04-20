@@ -287,6 +287,22 @@ app-player {
         display: none !important;
       }
 
+      /** Style title and data columns **/
+      .data-title,
+      .data-field {
+        text-shadow: 0 0 2px hsla(0, 0%, 0%, 0.67);
+        padding: 0;
+      }
+      .data-title {
+        font-weight: bold;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .data-field {
+        font-weight: bold;
+      }
+
       /** Align clan tag and ship tier always to right side **/
       #account-clan,
       #ship-tier {
