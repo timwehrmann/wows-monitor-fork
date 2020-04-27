@@ -303,6 +303,19 @@ app-player {
         font-weight: bold;
       }
 
+      /** Additional stylings for karma and pr rating **/
+      #account-karma,
+      #ship-pr {
+        &:before {
+          display: inline;
+          content: "\00a0\00a0(";
+        }
+        &:after {
+          display: inline;
+          content: ")";
+        }
+      }
+
       /** Align clan tag and ship tier always to right side **/
       #account-clan,
       #ship-tier {
@@ -340,7 +353,8 @@ app-player {
       }
       &.hidden,
       &.bot {
-        #account-karma {
+        #account-karma,
+        #ship-pr {
           display: none;
         }
       }

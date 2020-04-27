@@ -82,26 +82,32 @@
   <div id="account-title">
     <div id="account-clan" *ngIf="player.clan && !cw" class="data-title">
       <span [style.color]="player.clan.color | sanitizeCss">
-        [{{player.clan.tag}}] &nbsp;
+        [{{player.clan.tag}}]&nbsp;&nbsp;
       </span>
     </div>
 
     <div id="account-name" class="data-title">
       {{player.name}}
+
       <span id="account-karma">
-        &nbsp;
-        (<app-value-label-mdi *ngIf="!player.bot && !player.hidden" icon="mdi-yin-yang" label="Karma" position="top">{{player.karma}}</app-value-label-mdi>)
+        <app-value-label-mdi *ngIf="!player.bot && !player.hidden" icon="mdi-yin-yang" label="Karma" position="top">{{player.karma}}</app-value-label-mdi>
       </span>
     </div>
   </div>
 
   <div id="ship-title">
     <div id="ship-tier" class="data-title">
-      T{{player.shipInfo.tier}}&nbsp;
+      T{{player.shipInfo.tier}}&nbsp;&nbsp;
     </div>
 
     <div id="ship-name" class="data-title">
       {{player.shipInfo.name}}
+
+      <span id="ship-pr">
+        <app-value-label-mdi *ngIf="!player.bot && !player.hidden" icon="mdi-grade" [label]="'monitor.pr.poweredBy' | translate" position="top">
+          <span [style.color]="player.shipStats?.personalRatingColor | sanitizeCss">{{player.shipStats?.personalRating}}</span>
+        </app-value-label-mdi>
+      </span>
     </div>
   </div>
 
