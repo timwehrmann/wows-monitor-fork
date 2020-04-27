@@ -104,7 +104,7 @@
       {{player.shipInfo.name}}
 
       <span id="ship-pr">
-        <app-value-label-mdi *ngIf="!player.bot && !player.hidden" icon="mdi-grade" [label]="'monitor.pr.poweredBy' | translate" position="top">
+        <app-value-label-mdi *ngIf="!player.bot && !player.hidden" icon="mdi-star" [label]="'monitor.pr.poweredBy' | translate" position="top">
           <span [style.color]="player.shipStats?.personalRatingColor | sanitizeCss">{{player.shipStats?.personalRating}}</span>
         </app-value-label-mdi>
       </span>
