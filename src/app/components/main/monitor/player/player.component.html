@@ -90,7 +90,7 @@
       {{player.name}}
 
       <span id="account-karma">
-        <app-value-label-mdi *ngIf="!player.bot && !player.hidden" icon="mdi-yin-yang" label="Karma" position="top">{{player.karma}}</app-value-label-mdi>
+        <app-value-label *ngIf="!player.bot && !player.hidden" [icon]="faYinYang" label="Karma" position="top">{{player.karma}}</app-value-label>
       </span>
     </div>
   </div>
@@ -104,59 +104,59 @@
       {{player.shipInfo.name}}
 
       <span id="ship-pr">
-        <app-value-label-mdi *ngIf="!player.bot && !player.hidden" icon="mdi-star" [label]="'monitor.pr.poweredBy' | translate" position="top">
+        <app-value-label *ngIf="!player.bot && !player.hidden" [icon]="faStar" [label]="'monitor.pr.poweredBy' | translate" position="top">
           <span [style.color]="player.shipStats?.personalRatingColor | sanitizeCss">{{player.shipStats?.personalRating}}</span>
-        </app-value-label-mdi>
+        </app-value-label>
       </span>
     </div>
   </div>
 
   <div id="account-battles" class="data-field">
-    <app-value-label-mdi icon="mdi-sword-cross" label="Account: Battles" position="top">
+    <app-value-label [icon]="faAnchor" label="Account: Battles" position="top">
       <span [style.color]="player.overallStats?.battlesColor | sanitizeCss">{{player.overallStats?.battles}}</span>
-    </app-value-label-mdi>
+    </app-value-label>
   </div>
 
   <div id="account-wr" class="data-field">
-    <app-value-label-mdi icon="mdi-trophy" label="Account: Winrate" position="top">
+    <app-value-label [icon]="faTrophy" label="Account: Winrate" position="top">
       <span [style.color]="player.overallStats?.winrateColor | sanitizeCss">{{player.overallStats?.winrate | number:'0.0-2'}}%</span>
-    </app-value-label-mdi>
+    </app-value-label>
   </div>
 
   <div id="account-dmg" class="data-field">
-    <app-value-label-mdi icon="mdi-flash" label="Account: Avg. Damage" position="bottom">
+    <app-value-label [icon]="faBolt" label="Account: Avg. Damage" position="bottom">
       <span [style.color]="player.overallStats?.averageDamageColor | sanitizeCss">{{player.overallStats?.averageDamage | number:'0.0-0'}}</span>
-    </app-value-label-mdi>
+    </app-value-label>
   </div>
 
   <div id="account-frags" class="data-field">
-    <app-value-label-mdi icon="mdi-skull" label="Account: Avg. Frags" position="bottom">
+    <app-value-label [icon]="faSkull" label="Account: Avg. Frags" position="bottom">
       <span [style.color]="player.overallStats?.averageFragsColor | sanitizeCss">{{player.overallStats?.averageFrags | number:'0.0-1'}}</span>
-    </app-value-label-mdi>
+    </app-value-label>
   </div>
 
   <div id="ship-battles" class="data-field">
-    <app-value-label-mdi icon="mdi-sword-cross" label="Ship: Battles" position="top">
+    <app-value-label [icon]="faAnchor" label="Ship: Battles" position="top">
       <span>{{player.shipStats?.battles}}</span>
-    </app-value-label-mdi>
+    </app-value-label>
   </div>
 
   <div id="ship-wr" class="data-field">
-    <app-value-label-mdi icon="mdi-trophy" label="Ship: Avg. Winrate" position="top">
+    <app-value-label [icon]="faTrophy" label="Ship: Avg. Winrate" position="top">
       <span [style.color]="player.shipStats?.winrateColor | sanitizeCss">{{player.shipStats?.winrate | number:'0.0-2'}}%</span>
-    </app-value-label-mdi>
+    </app-value-label>
   </div>
 
   <div id="ship-dmg" class="data-field">
-    <app-value-label-mdi icon="mdi-flash" label="Ship: Avg. Damage" position="bottom">
+    <app-value-label [icon]="faBolt" label="Ship: Avg. Damage" position="bottom">
       <span [style.color]="player.shipStats?.averageDamageColor | sanitizeCss">{{player.shipStats?.averageDamage | number:'0.0-0'}}</span>
-    </app-value-label-mdi>
+    </app-value-label>
   </div>
 
   <div id="ship-frags" class="data-field">
-    <app-value-label-mdi icon="mdi-skull" label="Ship: Avg. Frags" position="bottom">
+    <app-value-label [icon]="faSkull" label="Ship: Avg. Frags" position="bottom">
       <span [style.color]="player.shipStats?.averageFragsColor | sanitizeCss">{{player.shipStats?.averageFrags | number:'0.0-1'}}</span>
-    </app-value-label-mdi>
+    </app-value-label>
   </div>
 
   <div id="message">

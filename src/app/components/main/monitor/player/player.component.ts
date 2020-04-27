@@ -1,6 +1,6 @@
 import { Component, HostBinding, Inject, Input, OnInit, SecurityContext } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { faExclamationCircle, faFire, faGavel, faHeart, faLightbulb, faSkull, faTrophy } from '@fortawesome/free-solid-svg-icons';
+import { faExclamationCircle, faFire, faGavel, faHeart, faLightbulb, faSkull, faTrophy, faYinYang, faStar, faAnchor, faBolt } from '@fortawesome/free-solid-svg-icons';
 import { PlayerInfo } from 'src/app/generated/models';
 import { ElectronService, ElectronServiceToken } from 'src/app/interfaces/electron.service';
 import { WowsNumbersPipe } from 'src/app/shared/pipes/wows-numbers.pipe';
@@ -81,6 +81,10 @@ export class PlayerComponent extends BaseComponent implements OnInit {
   faExclamation = faExclamationCircle;
   faBulb = faLightbulb;
   faGavel = faGavel;
+  faYinYang = faYinYang;
+  faStar = faStar;
+  faAnchor = faAnchor;
+  faBolt = faBolt;
 
   constructor(private sanitizer: DomSanitizer, public config: Config, @Inject(ElectronServiceToken) private electronService: ElectronService, ) {
     super();

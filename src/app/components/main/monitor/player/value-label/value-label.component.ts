@@ -16,6 +16,9 @@ export class ValueLabelComponent extends BaseComponent implements OnInit {
   @Input()
   icon: IconDefinition;
 
+  @Input()
+  position: string;
+
   constructor(public config: Config) {
     super();
   }
