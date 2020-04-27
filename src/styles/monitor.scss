@@ -349,6 +349,7 @@ app-player {
       &.no-battles {
         #message {
           display: block;
+          padding: 0;
         }
       }
       &.hidden,
