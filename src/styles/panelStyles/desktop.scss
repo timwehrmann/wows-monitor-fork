@@ -108,8 +108,8 @@
 
     &.no-battles {
       grid-template-areas:
-        'account-title message message account-battles account-wr'
-        'ship-title message message account-dmg account-frags';
+        'account-title account-battles account-wr message message'
+        'ship-title account-dmg account-frags message message';
     }
   }
 }
