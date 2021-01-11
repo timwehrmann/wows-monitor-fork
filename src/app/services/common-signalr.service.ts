@@ -24,7 +24,6 @@ export class CommonSignalrService extends BaseInjection implements SignalrServic
   private _$livefeedUpdate = new BehaviorSubject<LivefeedItem[]>([]);
 
 
-
   get $socketStatus(): Observable<SignalrStatus> {
     return this._$socketStatus.asObservable();
   }
@@ -63,7 +62,7 @@ export class CommonSignalrService extends BaseInjection implements SignalrServic
   async init() {
 
     // Url Param Testing
-    let url = environment.apiUrl + appConfig.hub + '?host=' + (environment.desktop ? 'true' : 'false');
+    const url = environment.apiUrl + appConfig.hub + '?host=' + (environment.desktop ? 'true' : 'false');
     await this.config.waitTillLoaded();
     let token = this.config.signalRToken;
     if (!token) {
@@ -135,13 +134,16 @@ export class CommonSignalrService extends BaseInjection implements SignalrServic
       this._$livefeedUpdate.next(items);
     });
 
-    this.connection.onclose((error) => {
+    this.connection.onclose(() => {
       this._$socketStatus.next(SignalrStatus.Disconnected);
+      if (environment.production) {
+        setTimeout(() => this.connect(), 2000);
+      }
     });
   }
 
   connect(): Promise<any> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       if (this.connection) {
         try {
           this.connection.start()
@@ -149,8 +151,11 @@ export class CommonSignalrService extends BaseInjection implements SignalrServic
               this.sendSettings(this._settings);
               resolve(true);
             })
-            .catch((error) => {
+            .catch(() => {
               this.loggerService.error('Couldn\'t connect to the signalr hub');
+              if (environment.production) {
+                setTimeout(() => this.connect(), 2000);
+              }
               resolve(false);
             });
         } catch (e) {
@@ -164,7 +169,7 @@ export class CommonSignalrService extends BaseInjection implements SignalrServic
   }
 
   disconnect() {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       if (this.connection) {
         try {
           this.connection.stop()
@@ -172,7 +177,7 @@ export class CommonSignalrService extends BaseInjection implements SignalrServic
               resolve(true);
               this._$socketStatus.next(SignalrStatus.Disconnected);
             })
-            .catch((error) => {
+            .catch(() => {
               this.loggerService.error('Couldn\'t disconnect from the signalr hub');
               resolve(false);
             });

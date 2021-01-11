@@ -1,7 +1,7 @@
 {
   "name": "@wows-monitor/app",
   "description": "WoWs Monitor",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "homepage": "https://wows-monitor.com",
   "author": {
     "name": "stewie",
@@ -25,7 +25,7 @@
     "lint": "ng lint && tslint ./src-electron/*.ts",
     "lint-electron": "./node_modules/.bin/eslint ./tooling/*.js --debug",
     "e2e": "ng e2e",
-    "preelectron": "tsc -p tsconfig-serve.json",
+    "preelectron": "electron-rebuild && tsc -p tsconfig-serve.json",
     "electron:start": "npm-run-all -p start:desktop:electron electron:serve",
     "electron:serve": "wait-on http-get://localhost:4200/ && npm run preelectron && electron . --serve",
     "electron:local": "npm run preelectron && electron . --local",
@@ -48,7 +48,8 @@
     "electron-window-state": "5.0.3",
     "skeleton-css": "2.0.4",
     "tslib": "^1.10.0",
-    "universal-analytics": "^0.4.20"
+    "universal-analytics": "^0.4.20",
+    "win-version-info": "^3.1.1"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "0.900.1",
@@ -73,8 +74,9 @@
     "@fortawesome/free-brands-svg-icons": "5.12.0",
     "@fortawesome/free-regular-svg-icons": "5.12.0",
     "@fortawesome/free-solid-svg-icons": "5.12.0",
-    "@ngx-loading-bar/core": "4.2.0",
-    "@ngx-loading-bar/router": "4.2.0",
+    "@ngx-loading-bar/core": "~5.1.1",
+    "@ngx-loading-bar/http-client": "^5.1.1",
+    "@ngx-loading-bar/router": "~5.1.1",
     "@ngx-meta/core": "8.0.2",
     "@ngx-translate/core": "12.0.0",
     "@ngx-translate/http-loader": "4.0.0",
@@ -88,6 +90,7 @@
     "electron": "^8.2.2",
     "electron-builder": "^22.4.1",
     "electron-reload": "1.5.0",
+    "electron-rebuild": "^2.3.4",
     "fast-xml-parser": "3.14.0",
     "jasmine-core": "3.4.0",
     "jasmine-spec-reporter": "4.2.1",
@@ -102,7 +105,7 @@
     "npm-run-all": "4.1.5",
     "path": "^0.12.7",
     "primeicons": "^2.0.0",
-    "primeng": "^9.0.0-rc.4",
+    "primeng": "^9.0.6",
     "protractor": "5.4.2",
     "rxjs": "6.5.4",
     "semver": "6.3.0",
@@ -112,6 +115,7 @@
     "uuid": "^3.3.3",
     "wait-on": "3.3.0",
     "webdriver-manager": "12.1.4",
+    "win-version-info": "^3.1.1",
     "zone.js": "0.10.2"
   }
 }
