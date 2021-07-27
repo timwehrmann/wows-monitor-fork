@@ -1,9 +1,17 @@
 import { AfterViewInit, Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { faWindowClose, faWindowMaximize, faWindowMinimize, faWindowRestore } from '@fortawesome/free-solid-svg-icons';
-import { MetaService } from '@ngx-meta/core';
-import { ElectronService, ElectronServiceToken } from 'src/app/interfaces/electron.service';
-import { appConfig } from 'src/config/app.config';
-import { BaseComponent } from '../../base.component';
+import { BaseComponent } from '@components/base.component';
+import { staticValues } from '@environments/static-values';
+import { faGavel, faPodcast, faWindowClose, faWindowMaximize, faWindowMinimize, faWindowRestore } from '@fortawesome/free-solid-svg-icons';
+import { ElectronService, ElectronServiceToken } from '@interfaces/electron.service';
+import { GatewayService } from '@services/gateway.service';
+import { Subject } from 'rxjs';
+
+declare type WindowState = {
+  maximizable: boolean;
+  isMaximized: boolean;
+  minimizable: boolean;
+  closable: boolean;
+}
 
 @Component({
   selector: 'app-titlebar',
@@ -16,41 +24,57 @@ export class TitlebarComponent extends BaseComponent implements OnInit, AfterVie
   restoreIcon = faWindowRestore;
   minimizeIcon = faWindowMinimize;
 
-  get win() {
-    return this.electronService.remote.BrowserWindow.getAllWindows()[0];
-  }
-
   get title() {
-    return appConfig.applicationName;
+    return staticValues.applicationName;
   }
 
-  constructor(@Inject(ElectronServiceToken) private electronService: ElectronService, private metaService: MetaService) {
+  constructor(@Inject(ElectronServiceToken) private electronService: ElectronService) {
     super();
   }
 
+  private checkState = new Subject();
+  public windowState: WindowState;
+
   ngOnInit() {
+    this.electronService.ipcRenderer
+      .on('win-show', () => this.checkState.next(true))
+      .on('win-maximize', () => this.checkState.next(true))
+      .on('win-unmaximize', () => this.checkState.next(true))
+      .on('win-minimize', () => this.checkState.next(true))
+      .on('win-restore', () => this.checkState.next(true))
+      .on('win-resized', () => this.checkState.next(true))
+      .on('win-move', () => this.checkState.next(true));
+
+    this.checkState
+      //.pipe(debounceTime(10))
+      .subscribe(() => this.resolveState());
+    this.checkState.next(true);
   }
 
   ngAfterViewInit() {
   }
 
-  minimize() {
-    if (this.win.minimizable) {
-      this.win.minimize();
+  private async resolveState() {
+    this.windowState = await this.electronService.ipcRenderer.invoke('get-win-state');
+  }
+
+  async minimize() {
+    if (this.windowState.minimizable) {
+      await this.electronService.ipcRenderer.invoke('minimize-win');
     }
   }
 
-  maximize() {
-    if (this.win.maximizable && !this.win.isMaximized()) {
-      this.win.maximize();
+  async maximize() {
+    if (this.windowState.maximizable && !this.windowState.isMaximized) {
+      await this.electronService.ipcRenderer.invoke('maximize-win');
     } else {
-      this.win.restore();
+      await this.electronService.ipcRenderer.invoke('restore-win');
     }
   }
 
-  close() {
-    if (this.win.closable) {
-      this.electronService.remote.BrowserWindow.getFocusedWindow().close();
+  async close() {
+    if (this.windowState.closable) {
+      await this.electronService.ipcRenderer.invoke('close-win');
     }
   }
 

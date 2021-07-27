@@ -1,40 +1,42 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ChangelogResponse } from 'src/app/generated/models';
-import { Config } from 'src/config/config';
-import { BaseComponent } from '../../base.component';
+import { BaseComponent } from '@components/base.component';
+import { ChangelogAppModel } from '@generated/models';
+import { SettingsService } from '@services/settings.service';
+import { last, map, take } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-changelogs',
   templateUrl: './changelogs.component.html'
 })
 export class ChangelogsComponent extends BaseComponent implements OnInit, OnDestroy {
 
   selectedId: number;
+  changelogs = this.route.data.pipe(this.untilDestroy(), map(d => d.changelogs as ChangelogAppModel[]));
 
-  constructor(public route: ActivatedRoute, private config: Config) {
+  constructor(public route: ActivatedRoute, private settingsService: SettingsService) {
     super();
   }
 
   ngOnInit() {
-    if (this.route.snapshot.data.changelogs) {
-      this.selectedId = this.route.snapshot.data.changelogs[0].id;
-    }
+    this.changelogs.subscribe(changelogs => {
+      this.selectedId = changelogs[0].id;
+    });
   }
 
-  isSeen(changelog: ChangelogResponse) {
-    return this.config.seenChangelogs && this.config.seenChangelogs.some(id => changelog.id == id)
+  isSeen(changelogId: number) {
+    return this.settingsService.form.seenChangelogs.value?.some(id => changelogId == id);
   }
 
-  selectChangelog(changelog: ChangelogResponse) {
-    this.selectedId = changelog.id;
-    this.config.pushSeenChangelogs(changelog.id);
-    this.config.save();
+  selectChangelog(changelogId: number) {
+    this.selectedId = changelogId;
+    this.settingsService.form.seenChangelogs.model?.push(changelogId);
+    this.settingsService.form.seenChangelogs.updateValueAndValidity({ emitEvent: true });
   }
 
-  markAllAsSeen() {
-    this.config.pushSeenChangelogs(...this.route.snapshot.data.changelogs.map(c => c.id));
-    this.config.save();
+  async markAllAsSeen() {
+    const changelogs = await this.changelogs.pipe(take(1)).toPromise();
+    this.settingsService.form.seenChangelogs.model?.push(...changelogs.map(c => c.id));
+    this.settingsService.form.seenChangelogs.updateValueAndValidity({ emitEvent: true });
   }
 
   ngOnDestroy() {

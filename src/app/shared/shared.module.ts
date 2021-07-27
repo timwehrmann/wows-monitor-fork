@@ -1,4 +1,12 @@
+import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
+import { ShowdownComponent } from '@shared/components/showdown/showdown.component';
+import { DeviceNamePipe } from '@shared/pipes/device-name.pipe';
+
+import { PipesModule } from '@stewie/framework';
+import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
 import { ExternalLinkDirective } from './directives/external-link.directive';
 import { IsBrowserDirective } from './directives/is-browser.directive';
 import { IsDesktopDirective } from './directives/is-desktop.directive';
@@ -16,7 +24,9 @@ import { ResolveClansPipe } from './pipes/resolve-clans.pipe';
 import { RomanPipe } from './pipes/roman.pipe';
 import { SanitizeCssPipe } from './pipes/sanitize-css.pipe';
 import { SanitizeHtmlPipe } from './pipes/sanitize-html.pipe';
+import { WowsKarmaPipe } from './pipes/wows-karma.pipe';
 import { WowsNumbersPipe } from './pipes/wows-numbers.pipe';
+import { FilePickerComponent } from './components/file-picker/file-picker.component';
 
 @NgModule({
   declarations: [
@@ -35,9 +45,13 @@ import { WowsNumbersPipe } from './pipes/wows-numbers.pipe';
     ReplaceWhitespacePipe,
     RomanPipe,
     WowsNumbersPipe,
+    WowsKarmaPipe,
     AddPlusPipe,
     ResolveClansPipe,
-    Primetime2RegionPipe
+    Primetime2RegionPipe,
+    ShowdownComponent,
+    FilePickerComponent,
+    DeviceNamePipe
   ],
   exports: [
     IsDesktopDirective,
@@ -55,11 +69,22 @@ import { WowsNumbersPipe } from './pipes/wows-numbers.pipe';
     ReplaceWhitespacePipe,
     RomanPipe,
     WowsNumbersPipe,
+    WowsKarmaPipe,
     AddPlusPipe,
     ResolveClansPipe,
-    Primetime2RegionPipe
+    Primetime2RegionPipe,
+    ShowdownComponent,
+    FilePickerComponent,
+    DeviceNamePipe
   ],
-  imports: [],
+  imports: [
+    PipesModule,
+    ReactiveFormsModule,
+    InputTextModule,
+    ButtonModule,
+    CommonModule
+  ],
   providers: []
 })
-export class SharedModule { }
+export class SharedModule {
+}

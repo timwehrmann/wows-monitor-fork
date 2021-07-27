@@ -1,46 +1,44 @@
-import { Component, OnDestroy, OnInit, Inject } from '@angular/core';
+import { Component, HostBinding, Inject, OnDestroy, OnInit } from '@angular/core';
+import { BaseComponent } from '@components/base.component';
+import { ConfigtoolConfig } from '@generated/models/configtool-config';
+import { DirectoryService, DirectoryServiceToken } from '@interfaces/directory.service';
+import { ElectronService, ElectronServiceToken } from '@interfaces/electron.service';
+import { SettingsService } from '@services/settings.service';
 import { j2xParser, parse as parseXml2Json } from 'fast-xml-parser';
 import { join as pathJoin } from 'path';
-import { Subject } from 'rxjs';
-import { ConfigtoolConfig } from 'src/app/interfaces/configtool-config';
-import { Config } from 'src/config/config';
-import { BaseComponent } from '../../base.component';
-import { debounceTime } from 'rxjs/operators';
-import { DirectoryService, DirectoryServiceToken } from 'src/app/interfaces/directory.service';
-import { ElectronService, ElectronServiceToken } from 'src/app/interfaces/electron.service';
 
 @Component({
-  selector: 'app-configtool',
   templateUrl: './configtool.component.html'
 })
 export class ConfigtoolComponent extends BaseComponent implements OnInit, OnDestroy {
 
-  private $configChanged = new Subject();
+  @HostBinding('class.configtool')
+  public classConfigtool = true;
 
   lines: ConsoleLine[] = [];
   showDescription = false;
 
   constructor(
     @Inject(ElectronServiceToken) private electronService: ElectronService,
-    public config: Config,
+    public settingsService: SettingsService,
     @Inject(DirectoryServiceToken) private directoryService: DirectoryService) {
     super();
   }
 
   ngOnInit() {
-    this.$configChanged.pipe(this.untilDestroy(), debounceTime(1000)).subscribe(() => {
-      this.config.save();
-    });
+
   }
 
   async start() {
     this.lines = [];
-    const combinedPaths = [...this.config.configtoolConfig.clientPaths];
-    combinedPaths.unshift(this.config.selectedDirectory);
+    const combinedPaths = [...this.settingsService.form.configtoolConfig.clientPaths.model];
+    combinedPaths.unshift(this.settingsService.form.selectedDirectory.model);
 
     for (let i = 0; i < combinedPaths.length; i++) {
       const path = combinedPaths[i];
-      if (path === '') { continue; }
+      if (path === '') {
+        continue;
+      }
 
       this.writeWarn(i === 0 ? 'Processing main client' : `Processing client ${i}`);
 
@@ -48,53 +46,51 @@ export class ConfigtoolComponent extends BaseComponent implements OnInit, OnDest
       //if (this.directoryService.currentStatus.steamVersion) {
       resPath = await this.directoryService.getResFolderPath(path);
       //}
-      await this.setValues(pathJoin(resPath, 'engine_config.xml'), this.config.configtoolConfig);
+      await this.setValues(pathJoin(resPath, 'engine_config.xml'),
+        this.settingsService.form.configtoolConfig.model);
       await this.setValues(pathJoin(resPath + '_mods', 'engine_config.xml'),
-        this.config.configtoolConfig, true);
+        this.settingsService.form.configtoolConfig.model, true);
     }
   }
 
   async removePath(i: number) {
-    const path = this.config.configtoolConfig.clientPaths[i];
-    if (path == this.config.selectedDirectory) {
-      this.config.selectedDirectory = this.config.mainClient;
+    const path = this.settingsService.form.configtoolConfig.clientPaths.model[i];
+    if (path == this.settingsService.form.selectedDirectory.model) {
+      this.settingsService.form.selectedDirectory.setValue(this.settingsService.form.mainClient.model);
     }
-    this.config.configtoolConfig.clientPaths.splice(i, 1);
-    this.configChanged();
+    this.settingsService.form.configtoolConfig.clientPaths.model.splice(i, 1);
+    this.settingsService.form.configtoolConfig.clientPaths.updateValueAndValidity({ emitEvent: true });
   }
 
   async selectPath(i: number) {
-    const path = this.config.configtoolConfig.clientPaths[i];
-    const odr = await this.electronService.dialog.showOpenDialog(this.electronService.remote.BrowserWindow.getFocusedWindow(), {
+    const path = this.settingsService.form.configtoolConfig.clientPaths.model[i];
+    const odr = await this.electronService.showOpenDialog({
       defaultPath: path != '' ? path : undefined,
       properties: ['openDirectory']
     });
     if (odr && odr.filePaths && odr.filePaths.length > 0) {
-      this.ngZone.run(() => this.config.configtoolConfig.clientPaths[i] = odr.filePaths[0]);
+      this.ngZone.run(() => this.settingsService.form.configtoolConfig.clientPaths.model[i] = odr.filePaths[0]);
     }
-    this.configChanged();
+    this.settingsService.form.configtoolConfig.clientPaths.updateValueAndValidity({ emitEvent: true });
   }
 
-  configChanged() {
-    this.$configChanged.next();
-  }
 
   ngOnDestroy() {
     super.ngOnDestroy();
   }
 
-  private setValues(path: string, config: ConfigtoolConfig, resMods: boolean = false) {
-    if (!this.electronService.fs.existsSync(path)) {
+  private async setValues(path: string, config: ConfigtoolConfig, resMods: boolean = false) {
+    if (!(await this.existsStat(path))) {
       resMods ? this.writeWarn(`Config override not found in ${path}`)
         : this.writeWarn(`Couldn't find config in ${path}`);
       return;
     }
     try {
-      const fileContents = this.electronService.fs.readFileSync(path, { encoding: 'utf8' });
+      const fileContents = await this.electronService.fs.readFile(path, { encoding: 'utf8' });
       const version = this.directoryService.currentStatus.clientVersion;
       const backupPath = path.replace('engine_config.xml', `engine_config_backup${version}.xml`);
-      if (!this.electronService.fs.existsSync(backupPath)) {
-        this.electronService.fs.writeFileSync(backupPath, fileContents);
+      if (!(await this.existsStat(backupPath))) {
+        await this.electronService.fs.writeFile(backupPath, fileContents);
       }
 
 
@@ -115,7 +111,7 @@ export class ConfigtoolComponent extends BaseComponent implements OnInit, OnDest
       if (config.versionedReplaysEnabled) {
         json['engine_config.xml'].replays.versioned = config.versionedReplays;
       }
-      this.electronService.fs.writeFileSync(path, new j2xParser({ indentBy: '  ', format: true }).parse(json));
+      await this.electronService.fs.writeFile(path, new j2xParser({ indentBy: '  ', format: true }).parse(json));
       this.writeInfo(`Config ${path} saved.`);
     } catch (err) {
       this.writeError(`Couldn't read/write file ${path}`);
@@ -133,6 +129,14 @@ export class ConfigtoolComponent extends BaseComponent implements OnInit, OnDest
 
   private writeWarn(msg: string) {
     this.lines.push({ severity: 'warn', text: msg });
+  }
+
+  private async existsStat(path: string) {
+    try {
+      return await this.electronService.fs.stat(path);
+    } catch {
+      return null;
+    }
   }
 }
 

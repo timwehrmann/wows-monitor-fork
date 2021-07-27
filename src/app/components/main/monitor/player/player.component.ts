@@ -1,105 +1,116 @@
-import { Component, HostBinding, Inject, Input, OnInit, SecurityContext } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Optional, Output, SecurityContext, SimpleChanges } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { faExclamationCircle, faFire, faGavel, faHeart, faLightbulb, faSkull, faTrophy, faYinYang, faStar, faAnchor, faBolt } from '@fortawesome/free-solid-svg-icons';
-import { PlayerInfo } from 'src/app/generated/models';
-import { ElectronService, ElectronServiceToken } from 'src/app/interfaces/electron.service';
-import { WowsNumbersPipe } from 'src/app/shared/pipes/wows-numbers.pipe';
-import { Config } from 'src/config/config';
-import { BaseComponent } from '../../../base.component';
+import { BaseComponent } from '@components/base.component';
+import { PlayerBackgrounds, PlayerBackgroundsMode, PlayerAppModel, StatType } from '@generated/models';
+import { ScreenshotService } from '@services/desktop/screenshot.service';
+import { SettingsService } from '@services/settings.service';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { map, shareReplay, startWith } from 'rxjs/operators';
+import { MonitorComponent } from '../monitor.component';
 
 @Component({
   selector: 'app-player',
   templateUrl: './player.component.html'
 })
-export class PlayerComponent extends BaseComponent implements OnInit {
+export class PlayerComponent extends BaseComponent implements OnInit, OnChanges {
 
   @Input()
-  player: PlayerInfo;
+  playerInput: PlayerAppModel;
 
   @Input()
-  @HostBinding('class.cw')
   cw: boolean;
 
   @Input()
-  @HostBinding('class.last')
   last: boolean;
 
   @Input()
-  @HostBinding('class.first')
   first: boolean;
 
-  @HostBinding('class.me')
-  get me() {
-    return this.player.relation === 0;
-  }
+  @Input()
+  index: number;
 
-  @HostBinding('style.background-color')
-  get backgroundColor() {
-    if (this.config.playerBackgroundsMode === 'background') {
-      if (this.config.playerBackgrounds === 'pr' && this.player.shipStats) {
-        return this.sanitizer.sanitize(SecurityContext.STYLE, this.player.shipStats?.personalRatingColor + '28');
-      }
-      if (this.config.playerBackgrounds === 'wr' && this.player.shipStats?.battles > 0) {
-        return this.sanitizer.sanitize(SecurityContext.STYLE, this.player.shipStats?.winrateColor + '28');
-      }
-      if (this.config.playerBackgrounds === 'accwr' || (this.config.playerBackgrounds === 'wr' && this.player.shipStats?.battles <= 0)) {
-        return this.sanitizer.sanitize(SecurityContext.STYLE, this.player.overallStats?.winrateColor + '28');
-      }
-      if (this.config.playerBackgrounds === 'avgDmg' && this.player.shipStats) {
-        return this.sanitizer.sanitize(SecurityContext.STYLE, this.player.shipStats?.averageDamageColor + '28');
-      }
-    }
-    return '';
-  }
+  @Output()
+  clickPlayer = new EventEmitter();
 
-  @HostBinding('style.border-color')
-  get borderColor() {
-    if (this.config.playerBackgrounds === 'pr' && this.player.shipStats) {
-      return this.sanitizer.sanitize(SecurityContext.STYLE, this.player.shipStats?.personalRatingColor + '99');
-    }
-    if (this.config.playerBackgrounds === 'wr' && this.player.shipStats?.battles > 0) {
-      return this.sanitizer.sanitize(SecurityContext.STYLE, this.player.shipStats?.winrateColor + '99');
-    }
-    if (this.config.playerBackgrounds === 'accwr' || (this.config.playerBackgrounds === 'wr' && this.player.shipStats?.battles <= 0)) {
-      return this.sanitizer.sanitize(SecurityContext.STYLE, this.player.overallStats?.winrateColor + '99');
-    }
-    if (this.config.playerBackgrounds === 'avgDmg' && this.player.shipStats) {
-      return this.sanitizer.sanitize(SecurityContext.STYLE, this.player.shipStats?.averageDamageColor + '99');
-    }
-    return this.sanitizer.sanitize(SecurityContext.STYLE, '#FFF');
-  }
+  backgroundColor: Observable<string>;
+  borderColor: Observable<string>;
+  borderEnabled: Observable<boolean>;
 
-  @HostBinding('class.border-mode')
-  get borderModeClass() {
-    return this.config.playerBackgroundsMode === 'border';
-  }
+  public player$ = new BehaviorSubject<PlayerAppModel>(null);
+  public config = this.settings.form.monitorConfig.model;
 
-  faHeart = faHeart;
-  faSkull = faSkull;
-  faTrophy = faTrophy;
-  faFire = faFire;
-  faExclamation = faExclamationCircle;
-  faBulb = faLightbulb;
-  faGavel = faGavel;
-  faYinYang = faYinYang;
-  faStar = faStar;
-  faAnchor = faAnchor;
-  faBolt = faBolt;
-
-  constructor(private sanitizer: DomSanitizer, public config: Config, @Inject(ElectronServiceToken) private electronService: ElectronService, ) {
+  constructor(public el: ElementRef,
+              private sanitizer: DomSanitizer,
+              public settings: SettingsService,
+              public monitorComp: MonitorComponent,
+              @Optional() public screenshotService: ScreenshotService) {
     super();
   }
 
   ngOnInit() {
+    this.initColors();
   }
 
-  openWowsNumbers(player) {
-    const baseUrl = WowsNumbersPipe.staticTransform(player.region);
-    const url = `${baseUrl}player/${player.accountId},${player.name}/`;
-    if (this.isBrowser) {
-      window.open(url, '_blank');
-    } else {
-      this.electronService.shell.openExternal(url);
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['playerInput']) {
+      this.player$.next(changes['playerInput'].currentValue);
     }
+  }
+
+  private initColors() {
+
+    const obs = combineLatest([
+      this.settings.form.monitorConfig.playerBackgrounds.valueChanges.pipe(startWith(this.settings.form.monitorConfig.playerBackgrounds.value)),
+      this.settings.form.monitorConfig.playerBackgroundsMode.valueChanges.pipe(startWith(this.settings.form.monitorConfig.playerBackgroundsMode.value)),
+      this.settings.form.monitorConfig.soloStats.valueChanges.pipe(startWith(this.settings.form.monitorConfig.soloStats.value)),
+      this.player$
+    ]).pipe(this.untilDestroy(), map(arr => {
+      const playerBackgrounds = arr[0];
+      const playerBackgroundsMode = arr[1];
+      const soloStats = arr[2];
+      const player = arr[3];
+
+      const color = this.getColor(playerBackgroundsMode, playerBackgrounds, player, soloStats);
+
+      return {
+        background: playerBackgroundsMode === PlayerBackgroundsMode.Background
+          ? this.sanitizer.sanitize(SecurityContext.STYLE, color + '28')
+          : '',
+        border: playerBackgroundsMode === PlayerBackgroundsMode.Border
+          ? this.sanitizer.sanitize(SecurityContext.STYLE, color + '99')
+          : '#FFF',
+        borderEnabled: playerBackgroundsMode === PlayerBackgroundsMode.Border
+      };
+    }), shareReplay(1));
+
+    this.backgroundColor = obs.pipe(map(d => d.background));
+    this.borderColor = obs.pipe(map(d => d.border));
+    this.borderEnabled = obs.pipe(map(d => d.borderEnabled));
+  }
+
+  private getColor(playerBackgroundsMode: PlayerBackgroundsMode, playerBackgrounds: PlayerBackgrounds, player: PlayerAppModel, soloStats: StatType[]) {
+
+    if (playerBackgroundsMode !== PlayerBackgroundsMode.Disabled) {
+
+      const prStats = soloStats.includes(StatType.Pr) ? player.soloShipStats : player.shipStats;
+      if (playerBackgrounds === PlayerBackgrounds.Pr && prStats) {
+        return prStats?.personalRatingColor;
+      }
+
+      const wrStats = soloStats.includes(StatType.Wr) ? player.soloShipStats : player.shipStats;
+      if (playerBackgrounds === PlayerBackgrounds.Wr && wrStats?.battles > 0) {
+        return wrStats?.winrateColor;
+      }
+
+      const accWrStats = soloStats.includes(StatType.AccWr) ? player.soloOverallStats : player.overallStats;
+      if (playerBackgrounds === PlayerBackgrounds.AccWr || (playerBackgrounds === PlayerBackgrounds.Wr && wrStats?.battles <= 0)) {
+        return accWrStats?.winrateColor;
+      }
+      const dmgStats = soloStats.includes(StatType.AvgDamage) ? player.soloShipStats : player.shipStats;
+      if (playerBackgrounds === PlayerBackgrounds.AvgDmg && dmgStats) {
+        return dmgStats?.averageDamageColor;
+      }
+    }
+    return '';
   }
 }

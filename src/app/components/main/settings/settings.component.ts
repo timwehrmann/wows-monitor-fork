@@ -1,13 +1,15 @@
 import { AfterViewInit, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { BaseComponent } from '@components/base.component';
 import { faDesktop } from '@fortawesome/free-solid-svg-icons';
-import { SelectItem } from 'primeng/api';
-import { from } from 'rxjs';
-import { skip, switchMap } from 'rxjs/operators';
-import { ElectronService, ElectronServiceToken } from 'src/app/interfaces/electron.service';
-import { ScrollService } from 'src/app/services/scroll.service';
-import { Config } from 'src/config/config';
-import { BaseComponent } from '../../base.component';
+import { FontSize, LayoutMode, PlayerBackgrounds, PlayerBackgroundsMode, StatType, TeamWinrate } from '@generated/models';
+import { ElectronService, ElectronServiceToken } from '@interfaces/electron.service';
+import { TranslateService } from '@ngx-translate/core';
+import { ScrollService } from '@services/scroll.service';
+import { SettingsService } from '@services/settings.service';
+import { Observable } from 'rxjs';
+
+declare type ExtSelectItem = { label$: Observable<string>; value: any };
 
 @Component({
   selector: 'app-settings',
@@ -19,108 +21,154 @@ export class SettingsComponent extends BaseComponent implements OnInit, OnDestro
 
   showExaplanationDialog = false;
 
-  fontSizeOptions: SelectItem[] = [
+  fontSizeOptions: ExtSelectItem[] = [
     {
-      label: 'settings.appearance.fontsize.items.small',
-      value: 'small'
+      label$: this.translate.get('settings.appearance.fontsize.items.small'),
+      value: FontSize.Small
     },
     {
-      label: 'settings.appearance.fontsize.items.normal',
-      value: 'normal'
+      label$: this.translate.get('settings.appearance.fontsize.items.normal'),
+      value: FontSize.Normal
     },
     {
-      label: 'settings.appearance.fontsize.items.big',
-      value: 'big'
+      label$: this.translate.get('settings.appearance.fontsize.items.big'),
+      value: FontSize.Big
+    } //,
+    // {
+    //   label$: this.translate.get('settings.appearance.fontsize.items.huge'),
+    //   value: FontSize.Huge
+    // }
+  ];
+
+  layoutModeOptions: ExtSelectItem[] = [
+    {
+      label$: this.translate.get('settings.appearance.layoutMode.items.normal'),
+      value: LayoutMode.Normal
     },
     {
-      label: 'settings.appearance.fontsize.items.huge',
-      value: 'huge'
+      label$: this.translate.get('settings.appearance.layoutMode.items.compact'),
+      value: LayoutMode.Compact
+    },
+    {
+      label$: this.translate.get('settings.appearance.layoutMode.items.legacy'),
+      value: LayoutMode.Legacy
     }
   ];
 
-  layoutModeOptions: SelectItem[] = [
+  playerBackgroundsOptions: ExtSelectItem[] = [
     {
-      label: 'settings.appearance.layoutMode.items.normal',
-      value: 'normal'
+      label$: this.translate.get('settings.appearance.playerBackgrounds.items.pr'),
+      value: PlayerBackgrounds.Pr
     },
     {
-      label: 'settings.appearance.layoutMode.items.compact',
-      value: 'compact'
+      label$: this.translate.get('settings.appearance.playerBackgrounds.items.wr'),
+      value: PlayerBackgrounds.Wr
     },
     {
-      label: 'settings.appearance.layoutMode.items.xblubbs',
-      value: 'xblubbs'
+      label$: this.translate.get('settings.appearance.playerBackgrounds.items.accwr'),
+      value: PlayerBackgrounds.AccWr
     },
     {
-      label: 'settings.appearance.layoutMode.items.legacy',
-      value: 'legacy'
+      label$: this.translate.get('settings.appearance.playerBackgrounds.items.avgDmg'),
+      value: PlayerBackgrounds.AvgDmg
     }
   ];
 
-  playerBackgroundsOptions: SelectItem[] = [
+  playerBackgroundsModeOptions: ExtSelectItem[] = [
     {
-      label: 'settings.appearance.playerBackgrounds.items.pr',
-      value: 'pr'
+      label$: this.translate.get('settings.appearance.playerBackgroundsMode.items.disabled'),
+      value: PlayerBackgroundsMode.Disabled
     },
     {
-      label: 'settings.appearance.playerBackgrounds.items.wr',
-      value: 'wr'
+      label$: this.translate.get('settings.appearance.playerBackgroundsMode.items.background'),
+      value: PlayerBackgroundsMode.Background
     },
     {
-      label: 'settings.appearance.playerBackgrounds.items.accwr',
-      value: 'accwr'
-    },
-    {
-      label: 'settings.appearance.playerBackgrounds.items.avgDmg',
-      value: 'avgDmg'
+      label$: this.translate.get('settings.appearance.playerBackgroundsMode.items.border'),
+      value: PlayerBackgroundsMode.Border
     }
   ];
 
-  playerBackgroundsModeOptions: SelectItem[] = [
+  teamWinrateOptions: ExtSelectItem[] = [
     {
-      label: 'settings.appearance.playerBackgroundsMode.items.disabled',
-      value: 'disabled'
+      label$: this.translate.get('settings.appearance.teamWinrate.items.average'),
+      value: TeamWinrate.Average
     },
     {
-      label: 'settings.appearance.playerBackgroundsMode.items.background',
-      value: 'background'
+      label$: this.translate.get('settings.appearance.teamWinrate.items.weighted'),
+      value: TeamWinrate.Weighted
     },
     {
-      label: 'settings.appearance.playerBackgroundsMode.items.border',
-      value: 'border'
+      label$: this.translate.get('settings.appearance.teamWinrate.items.median'),
+      value: TeamWinrate.Median
     }
   ];
 
-  teamWinrateOptions: SelectItem[] = [
+  // AccWr = 1,
+  // AccBattles = 2,
+  // AccWins = 3,
+  // Wr = 8,
+  // Battles = 9,
+  // Wins = 10,
+  // AvgXp = 11,
+  // AvgDamage = 12,
+  // AvgFrags = 13,
+  // Pr = 14
+
+  soloStatsOptions: ExtSelectItem[] = [
     {
-      label: 'settings.appearance.teamWinrate.items.average',
-      value: 'average'
+      label$: this.translate.get('settings.appearance.soloStats.items.accWr'),
+      value: StatType.AccWr
     },
     {
-      label: 'settings.appearance.teamWinrate.items.weighted',
-      value: 'weighted'
+      label$: this.translate.get('settings.appearance.soloStats.items.accBattles'),
+      value: StatType.AccBattles
+    },
+    // {
+    //   label$: this.translate.get('settings.appearance.soloStats.items.accWins'),
+    //   value: StatType.AccWins
+    // },
+    {
+      label$: this.translate.get('settings.appearance.soloStats.items.wr'),
+      value: StatType.Wr
     },
     {
-      label: 'settings.appearance.teamWinrate.items.median',
-      value: 'median'
-    }
+      label$: this.translate.get('settings.appearance.soloStats.items.battles'),
+      value: StatType.Battles
+    },
+    {
+      label$: this.translate.get('settings.appearance.soloStats.items.wins'),
+      value: StatType.Wins
+    },
+    {
+      label$: this.translate.get('settings.appearance.soloStats.items.avgXp'),
+      value: StatType.AvgXp
+    },
+    {
+      label$: this.translate.get('settings.appearance.soloStats.items.avgDamage'),
+      value: StatType.AvgDamage
+    },
+    {
+      label$: this.translate.get('settings.appearance.soloStats.items.avgFrags'),
+      value: StatType.AvgFrags
+    },
+    {
+      label$: this.translate.get('settings.appearance.soloStats.items.pr'),
+      value: StatType.Pr
+    },
   ];
 
-  constructor(public config: Config,
-    @Inject(ElectronServiceToken) private electronService: ElectronService,
-    private activatedRoute: ActivatedRoute,
-    private scrollService: ScrollService) {
+  public monitorConfig = this.settingsService.form.monitorConfig;
+
+  constructor(public settingsService: SettingsService,
+              private translate: TranslateService,
+              @Inject(ElectronServiceToken) private electronService: ElectronService,
+              private activatedRoute: ActivatedRoute,
+              private scrollService: ScrollService) {
     super();
   }
 
   ngOnInit() {
-    this.config.$settingChanged.pipe(
-      this.untilDestroy(),
-      skip(1),
-      switchMap(() => from(this.config.save()))
-    ).subscribe(() => {
-      this.uiSuccess('settingsSaved');
-    });
   }
 
   ngAfterViewInit() {
@@ -134,12 +182,12 @@ export class SettingsComponent extends BaseComponent implements OnInit, OnDestro
   }
 
   async selectReplaysPath() {
-    const odr = await this.electronService.dialog.showOpenDialog(this.electronService.remote.BrowserWindow.getFocusedWindow(), {
-      defaultPath: this.config.selectedDirectory,
+    const odr = await this.electronService.showOpenDialog({
+      defaultPath: this.settingsService.form.selectedDirectory.model,
       properties: ['openDirectory']
     });
     if (odr && odr.filePaths && odr.filePaths.length > 0) {
-      this.ngZone.run(() => this.config.overwriteReplaysDirectory = odr.filePaths[0]);
+      this.ngZone.run(() => this.monitorConfig.overwriteReplaysDirectory.setValue(odr.filePaths[0]));
     }
   }
 

@@ -1,9 +1,8 @@
 import { Component, HostBinding, HostListener, Input, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { BaseComponent } from '@components/base.component';
 import { faStar as faStar } from '@fortawesome/free-regular-svg-icons';
 import { faCaretDown, faCaretUp, faSort, faStar as faStarSolid, IconDefinition } from '@fortawesome/free-solid-svg-icons';
-import { BaseComponent } from 'src/app/components/base.component';
-import { CwClan, CwHistoryEntry } from 'src/app/generated/models';
+import { CwClanAppModel, CwHistoryEntryAppModel } from '@generated/models';
 
 @Component({
   selector: 'app-match-item-team',
@@ -15,10 +14,10 @@ export class MatchItemTeamComponent extends BaseComponent implements OnInit {
   faStar = faStar;
 
   @Input()
-  clan: CwClan;
+  clan: CwClanAppModel;
 
   @Input()
-  entry: CwHistoryEntry;
+  entry: CwHistoryEntryAppModel;
 
   @Input()
   season: number;
@@ -35,7 +34,7 @@ export class MatchItemTeamComponent extends BaseComponent implements OnInit {
   globalRankIcon: IconDefinition;
   regionRankIcon: IconDefinition;
 
-  constructor(private router: Router) {
+  constructor() {
     super();
   }
 
@@ -43,7 +42,7 @@ export class MatchItemTeamComponent extends BaseComponent implements OnInit {
   @HostListener('click', ['$event'])
   click(event: any) {
     if (this.clan) {
-      this.router.navigateByUrl(`/home/clanwars/${this.clan.id}/${this.season}`, { state: { prevUrl: location.pathname } });
+      this.router.navigateByUrl(`/clanwars/${this.clan.id}/${this.season}`, { state: { prevUrl: location.pathname } });
     }
   }
 

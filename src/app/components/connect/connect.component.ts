@@ -1,6 +1,6 @@
-import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute, Router } from '@angular/router';
-import { Config } from 'src/config/config';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { GatewayTokenService } from '@services/gateway-token.service';
 import { BaseComponent } from '../base.component';
 
 @Component({
@@ -8,14 +8,13 @@ import { BaseComponent } from '../base.component';
 })
 export class ConnectComponent extends BaseComponent implements OnInit {
 
-  constructor(private config: Config, private route: ActivatedRoute, private router: Router) {
+  constructor(private gatewayToken: GatewayTokenService,
+              private route: ActivatedRoute) {
     super();
   }
 
   async ngOnInit() {
-    await this.config.waitTillLoaded();
-    this.config.signalRToken = this.route.snapshot.params.token;
-    await this.config.save();
-    this.router.navigateByUrl('/');
+    this.gatewayToken.setToken(this.route.snapshot.params.token);
+    await this.router.navigateByUrl('/');
   }
 }

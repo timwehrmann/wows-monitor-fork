@@ -1,6 +1,3 @@
-export const appConfig = {
-  applicationName: 'WoWs Monitor',
-  defautTitle: 'appTitle',
-  version: '1.0.3',
-  hub: '/hub'
-};
+import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+
+marker('appTitle')

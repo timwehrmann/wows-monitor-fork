@@ -4,28 +4,13 @@
 @import 'panelStyles/desktop.scss';
 @import 'panelStyles/desktopHD.scss';
 
-app-monitor {
-  display: block;
-  line-height: 1em;
-
-  .empty-monitor {
-    height: 95%;
-    width: 100%;
-    position: absolute;
-
-    span {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 1.5em;
-    }
-  }
+.monitor {
+  line-height: 1rem;
 
   .container {
     display: grid;
-    // margin-bottom: 2em; WHY WAS THIS HERE
-    grid-gap: 1em;
+    // margin-bottom: 2rem WHY WAS THIS HERE
+    grid-gap: 1rem;
     grid-template-areas:
       'title'
       'friendly-clan'
@@ -33,24 +18,25 @@ app-monitor {
       'enemy-clan'
       'enemy';
 
-    >p-card .ui-card {
+    > p-card .p-card {
       margin-bottom: 0;
+      overflow: hidden;
     }
 
-    &.fz-small {
-      font-size: 0.7em;
+    &.fz-Small {
+      font-size: 0.7rem;
     }
 
-    &.fz-normal {
-      font-size: 0.85em;
+    &.fz-Normal {
+      font-size: 0.85rem;
     }
 
-    &.fz-big {
-      font-size: 1em;
+    &.fz-Big {
+      font-size: 1rem;
     }
 
-    &.fz-huge {
-      font-size: 1.2em;
+    &.fz-Huge {
+      font-size: 1.2rem;
     }
   }
 
@@ -75,12 +61,50 @@ app-monitor {
     grid-area: enemy;
   }
 
-  p-card.no-padding .ui-card-body {
+  p-card.no-padding .p-card-body {
     padding: 0;
+  }
+
+
+}
+
+.p-overlaypanel.no-tip {
+  &:after,
+  &:before {
+    display: none;
   }
 }
 
-// app-player {
+.p-overlaypanel.no-padding {
+  border: none;
+  border-radius: 3px;
+
+  .overlaypanel-close {
+    // background: $textColor;
+    color: $primaryTextColor;
+    cursor: pointer;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-weight: 600;
+    font-size: 1.2rem;
+  }
+
+  .p-overlaypanel-content {
+    padding: 0;
+    display: flex;
+    flex: 1;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+}
+
+.clan-overlay-content {
+  min-width: 300px;
+  max-width: 300px;
+}
+
+// .monitor-player {
 //   // display: block;
 //   background: $secondaryDarkColor;
 
@@ -88,7 +112,7 @@ app-monitor {
 //     background: #FFF;
 //     color: $primaryTextColor;
 
-//     app-player.me {
+//     .monitor-player.me {
 //       border-color: $primaryTextColor;
 //     }
 //   }
@@ -97,12 +121,12 @@ app-monitor {
 // }
 
 .high-contrast-mode {
-  .ui-card {
+  .p-card {
     background: #FFF;
   }
 
 
-  app-player {
+  .monitor-player {
     color: $primaryTextColor;
 
     &:hover {
@@ -114,15 +138,15 @@ app-monitor {
 hr.player-seperator {
   background: $secondaryColor;
   height: 1px;
-  margin: 0 1em;
+  margin: 0 1rem;
   padding: 0;
   border: 0;
 }
 
-app-player {
+.monitor-player {
   box-sizing: border-box;
   display: block;
-  padding: 0 1em;
+  padding: 0 1rem;
   cursor: pointer;
   transition: all .3s ease-in-out;
   width: 100%;
@@ -135,8 +159,8 @@ app-player {
   }
 
   &.border-mode {
-    padding: 2px 1em 2px .3em;
-    border-width: 0 0 0 .7em;
+    padding: 2px 1em 2px .3rem;
+    border-width: 0 0 0 .7rem;
     border-style: solid;
   }
 
@@ -146,32 +170,32 @@ app-player {
 
   .info-wrapper {
     display: grid;
-    grid-gap: .5em;
+    grid-gap: .5rem;
     padding: calc(0.75em - 2px) 0;
     width: 100%;
     overflow: hidden;
 
-    &.force-white:not(.contrast-mode)>div:not(#name)  strong {
+    &.force-white:not(.contrast-mode) > *:not(.player-name) strong {
       color: $textColor !important;
     }
 
-    &.force-white.contrast-mode>div:not(#name)  strong {
+    &.force-white.contrast-mode > *:not(.player-name) strong {
       color: $primaryTextColor !important;
     }
 
     &.hidden,
     &.bot {
 
-      #ovr-winrate,
-      #ovr-battles,
-      #karma,
-      #winrate,
-      #battles,
-      #wins,
-      #pr,
-      #avg-damage,
-      #avg-frags,
-      #avg-xp {
+      stat-acc-wr,
+      stat-acc-battles,
+      stat-karma,
+      stat-ship-wr,
+      stat-ship-battles,
+      stat-ship-wins,
+      stat-ship-pr,
+      stat-ship-damage,
+      stat-ship-frags,
+      stat-ship-xp {
         display: none !important;
       }
 
@@ -182,13 +206,13 @@ app-player {
 
     &.no-battles {
 
-      #winrate,
-      #battles,
-      #pr,
-      #wins,
-      #avg-damage,
-      #avg-frags,
-      #avg-xp {
+      stat-ship-wr,
+      stat-ship-battles,
+      stat-ship-pr,
+      stat-ship-wins,
+      stat-ship-damage,
+      stat-ship-frags,
+      stat-ship-xp {
         display: none !important;
       }
 
@@ -198,18 +222,18 @@ app-player {
     }
 
     &.legacy {
-      #ovr-winrate,
-      #ovr-battles,
-      #karma,
-      #pr {
+      stat-acc-wr,
+      stat-acc-battles,
+      stat-karma,
+      stat-ship-pr {
         display: none !important;
       }
     }
 
     &.compact {
-      #wins,
-      #avg-xp,
-      #avg-frags {
+      stat-ship-wins,
+      stat-ship-xp,
+      stat-ship-frags {
         display: none !important;
       }
     }
@@ -383,57 +407,64 @@ app-player {
       padding: 0 0.5em;
     }
 
-    #name {
+    .player-name {
       grid-area: name;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      display: flex;
+      align-items: center;
+
+      img {
+        height: 1rem;
+        margin-right: .2rem;
+      }
     }
 
-    #ovr-winrate {
-      grid-area: ovr-winrate;
+    stat-acc-wr {
+      grid-area: acc-winrate;
     }
 
-    #ovr-battles {
-      grid-area: ovr-battles;
+    stat-acc-battles {
+      grid-area: acc-battles;
     }
 
-    #karma {
+    stat-karma {
       grid-area: karma;
     }
 
-    #ship {
+    .ship {
       grid-area: ship;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
 
-    #winrate {
+    stat-ship-wr {
       grid-area: winrate;
     }
 
-    #battles {
+    stat-ship-battles {
       grid-area: battles;
     }
 
-    #wins {
+    stat-ship-wins {
       grid-area: wins;
     }
 
-    #pr {
+    stat-ship-pr {
       grid-area: pr;
     }
 
-    #avg-damage {
+    stat-ship-damage {
       grid-area: avg-damage;
     }
 
-    #avg-frags {
+    stat-ship-frags {
       grid-area: avg-frags;
     }
 
-    #avg-xp {
+    stat-ship-xp {
       grid-area: avg-xp;
     }
   }
@@ -447,10 +478,27 @@ app-player {
 
 }
 
+app-value-label {
+  position: relative;
+  display: inline-block;
+
+  .solo-icon {
+    margin-left: .2em;
+
+    i {
+      font-size: .7em;
+    }
+
+    //position: absolute;
+    right: -1em;
+    top: -.5em;
+  }
+}
+
 app-team {
   display: block;
   cursor: pointer;
-  padding: 1em;
+  padding: 1rem;
 
   &:hover {
     background: transparentize($secondaryColor, 0.5);
@@ -460,25 +508,26 @@ app-team {
     .inner {
       display: inline-block;
 
-      >* {
+      > * {
         &:first-child {
           display: block;
         }
 
-        margin-right: 1em;
+        margin-right: 1rem;
       }
 
-      margin-right: 2em;
+      // margin-right: 2rem;
     }
   }
 }
 
 /* Larger than mobile */
-@media (min-width: 400px) {}
+@media (min-width: 400px) {
+}
 
 /* Larger than phablet */
-@media (min-width: 550px) {
-  app-player {
+@media (min-width: 576px) {
+  .monitor-player {
     .info-wrapper {
       @include phablet;
     }
@@ -486,8 +535,8 @@ app-team {
 }
 
 /* Larger than tablet */
-@media (min-width: 750px) {
-  app-monitor {
+@media (min-width: 768px) {
+  .monitor {
     .container {
 
       grid-template-columns: 1fr 1fr 1fr 1fr;
@@ -497,19 +546,25 @@ app-team {
     }
   }
 
-  app-player {
+  .monitor-player {
     .info-wrapper {
       @include mobile;
     }
   }
+
+  .clan-overlay-content {
+    min-width: 500px;
+    max-width: 500px;
+  }
 }
 
 /* Larger than desktop */
-@media (min-width: 1000px) {}
+@media (min-width: 992px) {
+}
 
 /* Larger than Desktop HD */
 @media (min-width: 1200px) {
-  app-monitor {
+  .monitor {
     .container {
       grid-template-rows: auto auto;
       grid-template-areas:
@@ -518,7 +573,7 @@ app-team {
     }
   }
 
-  app-player {
+  .monitor-player {
     .info-wrapper {
       @include desktop;
     }
@@ -526,7 +581,7 @@ app-team {
 }
 
 @media (min-width: 1440px) {
-  app-player {
+  .monitor-player {
     .info-wrapper {
       @include desktopHD;
     }

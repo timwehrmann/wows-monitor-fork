@@ -5,10 +5,11 @@ debug.log
 
 # compiled output
 /dist
+/release
 /tmp
 /out-tsc
-/src-electron/*.(js|map)
-
+/app/*.(js|map)
+/app/node_modules
 # dependencies
 /node_modules
 

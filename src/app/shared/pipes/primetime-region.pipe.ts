@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { Region } from 'src/app/generated/models';
+import { Region } from '@generated/models';
 
 const map = [{
   seasons: [6, 7, 8, 9, 10, 11, 12, 13],
@@ -31,7 +31,7 @@ export class Primetime2RegionPipe implements PipeTransform {
   constructor() { }
 
   transform(primetimeId: number, seasonId: number): Region {
-    const season = map.find(s => s.seasons.includes(seasonId));
+    const season = map[0];
     if (season) {
       const primetime = season.primetimes.find(p => p.primetime.includes(primetimeId));
       if (primetime) {

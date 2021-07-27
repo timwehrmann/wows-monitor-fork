@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
+import { ClanInfoAppModel } from '@generated/models';
+import { ClansService } from '@generated/services';
+import { CwHistoryListService } from '@services/cw-history-list.service';
 import { Observable } from 'rxjs';
-import { ClanInfo } from 'src/app/generated/models';
-import { ClansService } from 'src/app/generated/services';
-import { ClanWarsHistoryService } from 'src/app/services/clanwars-history.service';
 
 @Injectable()
-export class HistoryClanResolver implements Resolve<ClanInfo> {
-  constructor(private clansService: ClansService, private cwService: ClanWarsHistoryService) {
+export class HistoryClanResolver implements Resolve<ClanInfoAppModel> {
+  constructor(private clansService: ClansService, private cwService: CwHistoryListService) {
 
   }
 
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): ClanInfo | Observable<ClanInfo> | Promise<ClanInfo> {
+  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): ClanInfoAppModel | Observable<ClanInfoAppModel> | Promise<ClanInfoAppModel> {
     this.cwService.form.clanId.setValue(route.params.clanId);
     if (route.params.season) {
       this.cwService.form.season.setValue(parseInt(route.params.season, 0), { emitEvent: false });

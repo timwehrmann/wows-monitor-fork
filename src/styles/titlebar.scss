@@ -1,13 +1,16 @@
 @import '_variables.scss';
 
+
+
 app-titlebar {
 
-  display: block;
+  display: flex;
   background: $secondaryColor;
   height: 25px;
   overflow: hidden;
   padding: 2px;
   position: relative;
+  align-items: center;
 
   .app-titlebar-draggable {
     -webkit-app-region: drag;
@@ -15,30 +18,36 @@ app-titlebar {
     overflow: hidden;
   }
 
-  .app-title-wrapper {
-    float: left;
-    margin-left: .2em;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    height: 21px;
-    font-size: .8em;
+  .titlebar-icon {
+    height: 15px;
   }
 
-  .app-icon-wrapper {
-    float: left;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    height: 21px;
-    width: 40px;
-
-    .app-icon {
-      height: 15px;
-    }
+  .titlebar-title{
+    font-size: .8rem;
   }
+
+  //.app-title-wrapper {
+  //  float: left;
+  //  margin-left: .2rem;
+  //  display: flex;
+  //  flex-direction: row;
+  //  justify-content: center;
+  //  align-items: center;
+  //  height: 21px;
+
+  //}
+
+  //.app-icon-wrapper {
+  //  float: left;
+  //  display: flex;
+  //  flex-direction: row;
+  //  justify-content: center;
+  //  align-items: center;
+  //  height: 21px;
+  //  width: 40px;
+  //
+  //
+  //}
 
   .icon-wrapper {
     float: right;
@@ -73,7 +82,7 @@ app-titlebar {
 }
 
 #matchInfoWrapper {
-  padding-left: 1em;
+  padding-left: 1rem;
 }
 
 
@@ -83,13 +92,13 @@ app-titlebar {
 @media (min-width: 400px) {}
 
 /* Larger than phablet */
-@media (min-width: 550px) {}
+@media (min-width: 576px) {}
 
 /* Larger than tablet */
-@media (min-width: 750px) {}
+@media (min-width: 768px) {}
 
 /* Larger than desktop */
-@media (min-width: 1000px) {}
+@media (min-width: 992px) {}
 
 /* Larger than Desktop HD */
 @media (min-width: 1200px) {}

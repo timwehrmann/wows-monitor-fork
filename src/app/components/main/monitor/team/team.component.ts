@@ -1,9 +1,17 @@
-import { Component, ElementRef, Inject, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, Input, OnInit, ViewChild } from '@angular/core';
+import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import { BaseComponent } from '@components/base.component';
+import { ClanInfoAppModel, TeamAverageAppModel } from '@generated/models';
+import { TranslateService } from '@ngx-translate/core';
+import { SettingsService } from '@services/settings.service';
 import { MenuItem } from 'primeng/api';
-import { ClanInfo, TeamAverage } from 'src/app/generated/models';
-import { ElectronService, ElectronServiceToken } from 'src/app/interfaces/electron.service';
-import { Config } from 'src/config/config';
-import { BaseComponent } from '../../../base.component';
+import { OverlayPanel } from 'primeng/overlaypanel';
+
+marker('monitor.cw.leagues.0');
+marker('monitor.cw.leagues.1');
+marker('monitor.cw.leagues.2');
+marker('monitor.cw.leagues.3');
+marker('monitor.cw.leagues.4');
 
 @Component({
   selector: 'app-team',
@@ -12,62 +20,30 @@ import { BaseComponent } from '../../../base.component';
 export class TeamComponent extends BaseComponent implements OnInit {
 
   @Input()
-  clan: ClanInfo;
+  clan: ClanInfoAppModel;
 
   @Input()
-  team: TeamAverage;
+  averages: TeamAverageAppModel[];
 
   @Input()
   cw: boolean;
 
-  showDialog = false;
-
-  @ViewChild('weblink', { static: false })
-  weblink: ElementRef<HTMLLinkElement>;
+  @ViewChild('clansOverlay')
+  clansOverlay: OverlayPanel;
 
   items: MenuItem[];
 
-  get shipWinrate() {
-    if (this.config.teamWinrate === 'weighted') {
-      return this.team.weightedShipWinrate;
-    } else if (this.config.teamWinrate === 'median') {
-      return this.team.medianShipWinrate;
-    }
-    return this.team.shipWinrate;
-  }
-
-  get overallWinrate() {
-    if (this.config.teamWinrate === 'weighted') {
-      return this.team.weightedOverallWinrate;
-    } else if (this.config.teamWinrate === 'median') {
-      return this.team.medianOverallWinrate;
-    }
-    return this.team.overallWinrate;
-  }
-
-  constructor(public el: ElementRef,
-    private config: Config,
-    @Inject(ElectronServiceToken) private electronService: ElectronService) {
+  constructor(
+    public el: ElementRef) {
     super();
   }
 
   ngOnInit() {
-    this.items = [
-      {
-        label: this.translateService.instant('monitor.teamPopup.info'),
-        command: () => this.showDialog = true
-      },
-      {
-        label: this.translateService.instant('monitor.teamPopup.wowsNumbers'),
-        command: () => {
-          if (this.isBrowser) {
-            window.open(this.weblink.nativeElement.href, '_blank');
-          } else {
-            this.electronService.shell.openExternal(this.weblink.nativeElement.href);
-          }
-        }
-      }
-    ];
+
   }
 
+  @HostListener('click', ['$event'])
+  onClick($event: MouseEvent) {
+    this.clansOverlay.show($event);
+  }
 }

@@ -1,20 +1,29 @@
-import { AfterViewInit, Component, Inject, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnDestroy, ViewChild } from '@angular/core';
+import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import { BaseComponent } from '@components/base.component';
 import { faQrcode, faWifi } from '@fortawesome/free-solid-svg-icons';
+import { SignalrStatus } from '@interfaces/signalr';
+import { TranslateService } from '@ngx-translate/core';
+import { ResizeService } from '@services/resize.service';
+import { GatewayService } from '@services/gateway.service';
+import { ShowOnDirective } from '@shared/directives/show-on.directive';
 import { DialogService } from 'primeng/dynamicdialog';
 import { OverlayPanel } from 'primeng/overlaypanel';
-import { map, take, pairwise, distinctUntilChanged } from 'rxjs/operators';
-import { BaseComponent } from 'src/app/components/base.component';
-import { SignalrService, SignalrServiceToken, SignalrStatus } from 'src/app/interfaces/signalr.service';
-import { ResizeService } from 'src/app/services/resize.service';
-import { ShowOnDirective } from 'src/app/shared/directives/show-on.directive';
+import { map } from 'rxjs/operators';
 import { QrScanComponent } from './qr-scan/qr-scan.component';
 import { QrComponent } from './qr/qr.component';
+
+marker('service.connected');
+marker('service.issues.browser.noToken');
+marker('service.hostConnected');
+marker('service.issues.browser.hostDisconnected');
+marker('service.issues.connection');
 
 @Component({
   selector: 'app-connection',
   templateUrl: './connection.component.html'
 })
-export class ConnectionComponent extends BaseComponent implements AfterViewInit, OnDestroy {
+export class ConnectionComponent extends BaseComponent implements OnDestroy {
 
   connectionIcon = faWifi;
   qrIcon = faQrcode;
@@ -22,7 +31,7 @@ export class ConnectionComponent extends BaseComponent implements AfterViewInit,
   @ViewChild('qrErrorDetails', { static: true })
   qrErrorDetails: OverlayPanel;
 
-  statusText = this.signalrService.$socketStatus.pipe(map(status => {
+  statusText = this.signalrService.gatewayStatus$.pipe(map(status => {
     if (status === SignalrStatus.Connected) {
       return 'service.connected';
     } else if (status === SignalrStatus.NoToken) {
@@ -31,6 +40,8 @@ export class ConnectionComponent extends BaseComponent implements AfterViewInit,
       return 'service.hostConnected';
     } else if (status === SignalrStatus.HostDisconnected) {
       return 'service.issues.browser.hostDisconnected';
+    } else if (status === SignalrStatus.Reconnecting) {
+      return 'service.reconnecting';
     } else {
       return 'service.issues.connection';
     }
@@ -39,43 +50,17 @@ export class ConnectionComponent extends BaseComponent implements AfterViewInit,
   showOnTablet = this.resizeService.$resizeListener.pipe(map(() => ShowOnDirective.checkStatic('tablet', false)));
 
   constructor(
-    @Inject(SignalrServiceToken) public signalrService: SignalrService,
+    public signalrService: GatewayService,
     private dialogService: DialogService,
-    private resizeService: ResizeService
+    private resizeService: ResizeService,
+    private translateService: TranslateService
   ) {
     super();
   }
 
-  ngAfterViewInit() {
-    this.signalrService.init().then(() => this.connect());
-
-    this.signalrService.$error.pipe(this.untilDestroy()).subscribe(error => {
-      if (error.startsWith('apiError')) {
-        this.uiError(error);
-      } else {
-        this.uiError('apiError.unknown');
-      }
-    });
-
-    if (this.isDesktop) {
-      this.signalrService.$clients.pipe(this.untilDestroy(), pairwise(), distinctUntilChanged()).subscribe(nums => {
-        if (nums[0] <= nums[1]) {
-          this.uiSuccess('clientConnected');
-        } else {
-          this.uiWarn('clientDisconnected');
-        }
-      });
-    }
-  }
 
   async connect() {
-    const result = await this.signalrService.connect();
-    if (result) {
-      this.uiSuccess('serviceConnected');
-    } else {
-      this.uiError('noServiceConnection');
-    }
-    return result;
+    await this.signalrService.connect();
   }
 
   async reconnect() {
@@ -83,17 +68,19 @@ export class ConnectionComponent extends BaseComponent implements AfterViewInit,
   }
 
   openQrDialog(event) {
-    this.signalrService.$socketStatus.pipe(take(1)).subscribe(status => {
-      if (this.isDesktop && status !== SignalrStatus.Connected) {
-        this.qrErrorDetails.show(event);
-        return;
-      }
-      if (this.isDesktop) {
-        this.dialogService.open(QrComponent, { styleClass: 'qrPopup custom-popup desktop', showHeader: false, dismissableMask: true });
-      } else {
-        this.dialogService.open(QrScanComponent, { styleClass: 'qrPopup custom-popup browser', showHeader: false, dismissableMask: true });
-      }
-    });
+    if (this.isDesktop) {
+      this.dialogService.open(QrComponent, {
+        styleClass: 'qrPopup custom-popup desktop',
+        header: this.translateService.instant('webConnect.desktop.title'),
+        dismissableMask: true
+      });
+    } else {
+      this.dialogService.open(QrScanComponent, {
+        styleClass: 'qrPopup custom-popup browser',
+        header: this.translateService.instant('webConnect.browser.title'),
+        dismissableMask: true
+      });
+    }
   }
 
   ngOnDestroy() {

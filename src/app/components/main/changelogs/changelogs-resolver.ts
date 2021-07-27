@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
-import { ChangelogResponse } from 'src/app/generated/models';
-import { ChangelogService } from 'src/app/generated/services';
-import { Config } from 'src/config/config';
+import { ChangelogAppModel } from '@generated/models';
+import { ChangelogService } from '@generated/services';
+import { SettingsService } from '@services/settings.service';
 
 @Injectable()
-export class ChangelogsResolver implements Resolve<ChangelogResponse[]> {
+export class ChangelogsResolver implements Resolve<ChangelogAppModel[]> {
 
-  constructor(private changelogService: ChangelogService, private config: Config) {
+  constructor(private changelogService: ChangelogService, private settingsService: SettingsService) {
   }
 
-  async resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<ChangelogResponse[]> {
-    await this.config.waitTillLoaded();
-    return this.changelogService.changelogList(this.config.allowBeta ? { channel: 'beta' } : null).toPromise();
+  async resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<ChangelogAppModel[]> {
+    // await this.settingsService.waitForInitialized();
+    return this.changelogService.changelogList(this.settingsService.form.monitorConfig.allowBeta.value ? { channel: 'beta' } : null).toPromise();
   }
 }

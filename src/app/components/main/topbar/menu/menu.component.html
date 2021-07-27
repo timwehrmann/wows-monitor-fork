@@ -1,20 +1,71 @@
-<div class="menu-topbar" [routerLink]="'/home'">
-  <img src="assets/logo.svg" alt="logo">
-  <span>WoWs Monitor</span>
+<div class="p-d-flex p-flex-grow p-flex-column p-jc-between">
+  <div>
+    <div class="menu-topbar p-pt-2 p-pb-2 p-pl-3 p-pr-3 p-d-flex p-ai-center" [routerLink]="'/'" (click)="closeAction()">
+      <img src="assets/logo.svg" alt="logo" class="p-mr-4">
+      <span style="font-size: 1.2rem">WoWs Monitor</span>
+    </div>
+    <div class="menu-statusbar p-d-flex p-pt-1 p-pb-1">
+      <div class="statusbar-users p-pl-3 p-pr-2">
+        <fa-icon [icon]="usersIcon" class="p-mr-1"></fa-icon>
+        <span class="p-mr-1">{{gatewayService.clients$ | async}}</span>
+        <span>{{ 'labels.liveUsers' | translate }}</span>
+      </div>
+      <div class="statusbar-matches p-pl-2 p-pr-2">
+        <fa-icon [icon]="matchesIcon" class="p-mr-1"></fa-icon>
+        <span class="p-mr-1">{{gatewayService.matches$ | async}}</span>
+        <span>{{ 'labels.liveMatches' | translate}}</span>
+      </div>
+    </div>
+
+    <div class="menu-wrapper">
+      <ul>
+        <ng-container *ngFor="let entry of menu">
+          <li *showMenuEntry="entry" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+            <a [routerLink]="entry.routerLink" (click)="closeAction()">
+              <ng-container *ngIf=entry.icon>
+                <fa-icon [icon]="entry.icon"></fa-icon>
+              </ng-container>
+              {{entry.key | translate}}
+              <span *ngIf="entry.badge | async" class="badge">{{entry.badgeCount | async}}</span>
+            </a>
+          </li>
+        </ng-container>
+      </ul>
+    </div>
+  </div>
+
+  <div class="menu-user-section p-d-flex p-ai-center p-jc-center" [class.authenticated]="auth.isAuthenticated">
+    <div class="p-fluid p-flex-grow" *ngIf="!auth.isAuthenticated">
+      <button pButton [label]="'identity.labels.login' | translate" icon="pi pi-sign-in" (click)="selectingRegion = true"></button>
+    </div>
+    <div *ngIf="auth.isAuthenticated" class="p-d-flex p-flex-grow p-ai-center p-jc-between" style="font-size: 1.2rem;min-width: 0"
+         routerLink="/profile" (click)="closeAction()">
+      <span class="p-d-flex p-flex-grow p-ai-center p-mr-1" style="min-width: 0">
+        <img style="height: 2rem;" class="p-mr-2" src="assets/region-{{auth.userInfo.region}}.svg"/>
+        <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{auth.userInfo.username}}</span>
+      </span>
+      <i class="pi pi-cog"></i>
+    </div>
+  </div>
 </div>
 
-<div class="menu-wrapper">
-  <ul>
-    <ng-container *ngFor="let entry of menu">
-      <li *showMenuEntry="entry" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-        <a [routerLink]="entry.routerLink" (click)="closeAction()">
-          <ng-container *ngIf=entry.icon>
-            <fa-icon [icon]="entry.icon"></fa-icon>
-          </ng-container>
-          {{entry.key | translate}}
-          <span *ngIf="entry.badge | async" class="badge">{{entry.badgeCount | async}}</span>
-        </a>
-      </li>
-    </ng-container>
-  </ul>
-</div>
+
+<p-blockUI [blocked]="selectingRegion">
+  <button pButton class="region-select-close p-button p-button-rounded p-button-outlined p-button-xl" icon="pi pi-times"
+          (click)="selectingRegion = false">
+  </button>
+  <div class="p-grid">
+    <div class="p-col-12 p-md-6 p-d-flex p-ai-center p-jc-center">
+      <img class="region-select-icon" src="assets/region-0.svg" (click)="login($event, 0)"/>
+    </div>
+    <div class="p-col-12 p-md-6 p-d-flex p-ai-center p-jc-center">
+      <img class="region-select-icon" src="assets/region-1.svg" (click)="login($event, 1)"/>
+    </div>
+    <div class="p-col-12 p-md-6 p-d-flex p-ai-center p-jc-center">
+      <img class="region-select-icon" src="assets/region-2.svg" (click)="login($event, 2)"/>
+    </div>
+    <div class="p-col-12 p-md-6 p-d-flex p-ai-center p-jc-center">
+      <img class="region-select-icon" src="assets/region-3.svg" (click)="login($event, 3)"/>
+    </div>
+  </div>
+</p-blockUI>

@@ -1,11 +1,15 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { faCog, faDesktop, faFileAlt, faQuestionCircle, faShieldAlt, faWrench } from '@fortawesome/free-solid-svg-icons';
+import { Component, Inject, Input, OnInit, Renderer2 } from '@angular/core';
+import { BaseComponent } from '@components/base.component';
+import { faCog, faDesktop, faFileAlt, faGavel, faPodcast, faQuestionCircle, faShieldAlt, faWrench } from '@fortawesome/free-solid-svg-icons';
+import { Region } from '@generated/models/region';
+import { ChangelogService } from '@generated/services';
+import { MenuEntry } from '@interfaces/menu-entry';
+import { GatewayService } from '@services/gateway.service';
+import { JwtAuthService } from '@services/jwt-auth.service';
+import { SettingsService } from '@services/settings.service';
+import { AUTHSERVICETOKEN } from '@stewie/framework';
 import { BehaviorSubject, combineLatest } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { BaseComponent } from 'src/app/components/base.component';
-import { ChangelogService } from 'src/app/generated/services';
-import { MenuEntry } from 'src/app/interfaces/menu-entry';
-import { Config } from 'src/config/config';
+import { map, startWith } from 'rxjs/operators';
 
 @Component({
   selector: 'app-menu',
@@ -13,8 +17,12 @@ import { Config } from 'src/config/config';
 })
 export class MenuComponent extends BaseComponent implements OnInit {
 
+  usersIcon = faPodcast;
+  matchesIcon = faGavel;
+
   private $changelogsBadgeSubject = new BehaviorSubject(false);
   private $changelogsBadgeCountSubject = new BehaviorSubject(0);
+  public selectingRegion = false;
 
   @Input()
   closeAction: () => void;
@@ -22,48 +30,48 @@ export class MenuComponent extends BaseComponent implements OnInit {
   menu: MenuEntry[] = [
     {
       key: 'meta.monitor.title',
-      routerLink: '/home',
+      routerLink: '/',
       icon: faDesktop
     },
     {
       key: 'meta.configtool.title',
-      routerLink: '/home/configtool',
+      routerLink: '/configtool',
       icon: faWrench,
       browser: false,
-      desktop: true,
+      desktop: true
     },
     {
       key: 'meta.livefeed.title',
-      routerLink: '/home/clanwars/livefeed',
-      icon: faShieldAlt,
+      routerLink: '/clanwars/livefeed',
+      icon: faShieldAlt
     },
     {
       key: 'meta.clanwars.title',
-      routerLink: '/home/clanwars',
-      icon: faShieldAlt,
+      routerLink: '/clanwars',
+      icon: faShieldAlt
     },
     {
       key: 'meta.changelogs.title',
-      routerLink: '/home/changelogs',
+      routerLink: '/changelogs',
       icon: faFileAlt,
       badge: this.$changelogsBadgeSubject,
       badgeCount: this.$changelogsBadgeCountSubject
     },
     {
       key: 'meta.settings.title',
-      routerLink: '/home/settings',
+      routerLink: '/settings',
       icon: faCog
     },
     {
       key: 'meta.about.title',
-      routerLink: '/home/about',
+      routerLink: '/about',
       icon: faQuestionCircle
     }
   ];
 
   badge = combineLatest([...this.menu.filter(e => e.badge).map(e => e.badge)])
     .pipe(map(arr => {
-      return arr.some(b => b)
+      return arr.some(b => b);
     }));
 
 
@@ -72,17 +80,31 @@ export class MenuComponent extends BaseComponent implements OnInit {
       return arr.reduce((a, b) => a + b);
     }));
 
-  constructor(private changelogService: ChangelogService, private config: Config) {
+  userMenu = [
+    {
+      label: 'File'
+    },
+    {
+      label: 'Edit',
+      icon: 'pi pi-fw pi-pencil'
+    }
+  ];
+
+  constructor(private changelogService: ChangelogService,
+              private settingsService: SettingsService,
+              public gatewayService: GatewayService,
+              @Inject(AUTHSERVICETOKEN) public auth: JwtAuthService,
+              private renderer: Renderer2) {
     super();
     combineLatest([
-      this.changelogService.changelogIds(this.config.allowBeta ? { channel: 'beta' } : null),
-      this.config.$seenChangelogs
+      this.changelogService.changelogIds(this.settingsService.form.monitorConfig.allowBeta.model ? { channel: 'beta' } : null),
+      this.settingsService.form.seenChangelogs.valueChanges.pipe(startWith(this.settingsService.form.seenChangelogs.model))
     ])
       .pipe(this.untilDestroy())
-      .subscribe(arr => {
-        if (arr[0] != null && arr[1] != null) {
-          this.$changelogsBadgeSubject.next(arr[0].length > arr[1].length);
-          this.$changelogsBadgeCountSubject.next(arr[0].length - arr[1].length);
+      .subscribe(([ids, seenIds]) => {
+        if (ids != null && seenIds != null) {
+          this.$changelogsBadgeSubject.next(ids.length > seenIds.length);
+          this.$changelogsBadgeCountSubject.next(ids.length - seenIds.length);
         }
       });
   }
@@ -90,4 +112,14 @@ export class MenuComponent extends BaseComponent implements OnInit {
   ngOnInit() {
   }
 
+  async login(event: MouseEvent, region: Region) {
+    event.stopPropagation();
+    event.cancelBubble = true;
+    this.selectingRegion = false;
+    this.auth.login({ renderer: this.renderer, region }).subscribe();
+  }
+
+  logout() {
+    this.auth.logout();
+  }
 }

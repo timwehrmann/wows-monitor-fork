@@ -1,10 +1,14 @@
 <div class="floating-buttons">
-  <a routerLink="/home" class="round-icon-button">
-    <fa-icon [icon]="faDesktop" [fixedWidth]="true"></fa-icon>
-  </a>
+  <button class="p-button-rounded p-button-xl p-button p-component p-button-icon-only" routerLink="/">
+    <span class="p-button-icon">
+      <fa-icon [icon]="faDesktop" [fixedWidth]="true"></fa-icon>
+    </span>
+    <span aria-hidden="true" class="p-button-label">&nbsp;</span>
+  </button>
 </div>
 
-<div class="container small settings" externalLink>
+
+<div class="container small settings">
   <p-card>
     <h2>{{ 'settings.header' | translate}}</h2>
     <section>
@@ -18,7 +22,7 @@
             {{ 'settings.general.autoUpdate.summary' | translate }}
           </summary>
           <div class="input-wrap">
-            <p-inputSwitch [(ngModel)]="config.autoUpdate"></p-inputSwitch>
+            <p-inputSwitch [formControl]="monitorConfig.autoUpdate"></p-inputSwitch>
           </div>
         </article>
         <article *isDesktop>
@@ -29,7 +33,7 @@
             {{ 'settings.general.allowBeta.summary' | translate }}
           </summary>
           <div class="input-wrap">
-            <p-inputSwitch [(ngModel)]="config.allowBeta"></p-inputSwitch>
+            <p-inputSwitch [formControl]="monitorConfig.allowBeta"></p-inputSwitch>
           </div>
         </article>
       </ng-container>
@@ -41,10 +45,10 @@
           {{ 'settings.general.enableAnalytics.summary' | translate }}
         </summary>
         <div class="input-wrap">
-          <p-inputSwitch [(ngModel)]="config.enableAnalytics"></p-inputSwitch>
+          <p-inputSwitch [formControl]="monitorConfig.enableAnalytics"></p-inputSwitch>
         </div>
       </article>
-      <article [class.disabled]="!config.enableAnalytics">
+      <article [class.disabled]="!monitorConfig.enableAnalytics">
         <caption>
           {{ 'settings.general.anonymIp.caption' | translate }}
         </caption>
@@ -52,7 +56,7 @@
           {{ 'settings.general.anonymIp.summary' | translate }}
         </summary>
         <div class="input-wrap">
-          <p-inputSwitch [(ngModel)]="config.anonymIp"></p-inputSwitch>
+          <p-inputSwitch [formControl]="monitorConfig.anonymIp"></p-inputSwitch>
         </div>
       </article>
       <article *isDesktop>
@@ -63,7 +67,7 @@
           {{ 'settings.general.closeToTray.summary' | translate }}
         </summary>
         <div class="input-wrap">
-          <p-inputSwitch [(ngModel)]="config.closeToTray"></p-inputSwitch>
+          <p-inputSwitch [formControl]="monitorConfig.closeToTray"></p-inputSwitch>
         </div>
       </article>
     </section>
@@ -78,9 +82,9 @@
           {{ 'settings.appearance.fontsize.summary' | translate }}
         </summary>
         <div class="input-wrap">
-          <p-selectButton [options]="fontSizeOptions" [(ngModel)]="config.fontsize">
+          <p-selectButton [options]="fontSizeOptions" [formControl]="monitorConfig.fontSize">
             <ng-template let-item>
-              <span class="ui-button-text ui-clickable ng-star-inserted">{{item.label | translate}}</span>
+              <span class="p-button-text p-clickable ng-star-inserted">{{item.label$ | async}}</span>
             </ng-template>
           </p-selectButton>
         </div>
@@ -93,9 +97,9 @@
           {{ 'settings.appearance.layoutMode.summary' | translate }}
         </summary>
         <div class="input-wrap">
-          <p-selectButton [options]="layoutModeOptions" [(ngModel)]="config.layoutMode">
+          <p-selectButton [options]="layoutModeOptions" [formControl]="monitorConfig.layoutMode">
             <ng-template let-item>
-              <span class="ui-button-text ui-clickable ng-star-inserted">{{item.label | translate}}</span>
+              <span class="p-button-text p-clickable ng-star-inserted">{{item.label$ | async}}</span>
             </ng-template>
           </p-selectButton>
         </div>
@@ -108,7 +112,7 @@
           {{ 'settings.appearance.highContrastMode.summary' | translate }}
         </summary>
         <div class="input-wrap">
-          <p-inputSwitch [(ngModel)]="config.highContrastMode"></p-inputSwitch>
+          <p-inputSwitch [formControl]="monitorConfig.highContrastMode"></p-inputSwitch>
         </div>
       </article>
       <article>
@@ -119,14 +123,14 @@
           {{ 'settings.appearance.playerBackgroundsMode.summary' | translate }}
         </summary>
         <div class="input-wrap">
-          <p-selectButton [options]="playerBackgroundsModeOptions" [(ngModel)]="config.playerBackgroundsMode">
+          <p-selectButton [options]="playerBackgroundsModeOptions" [formControl]="monitorConfig.playerBackgroundsMode">
             <ng-template let-item>
-              <span class="ui-button-text ui-clickable ng-star-inserted">{{item.label | translate}}</span>
+              <span class="p-button-text p-clickable ng-star-inserted">{{item.label$ | async}}</span>
             </ng-template>
           </p-selectButton>
         </div>
       </article>
-      <article [class.disabled]="config.playerBackgroundsMode == 'disabled'">
+      <article [class.disabled]="monitorConfig.playerBackgroundsMode.model === 0">
         <caption>
           {{ 'settings.appearance.playerBackgrounds.caption' | translate }}
         </caption>
@@ -134,12 +138,12 @@
           {{ 'settings.appearance.playerBackgrounds.summary' | translate }}
         </summary>
         <div class="input-wrap">
-          <p-selectButton [options]="playerBackgroundsOptions" [(ngModel)]="config.playerBackgrounds">
+          <p-selectButton [options]="playerBackgroundsOptions" [formControl]="monitorConfig.playerBackgrounds">
             <ng-template let-item>
-              <span class="ui-button-text ui-clickable ng-star-inserted">{{item.label | translate}}</span>
+              <span class="p-button-text p-clickable ng-star-inserted">{{item.label$ | async}}</span>
             </ng-template>
           </p-selectButton>
-          <!-- <p-dropdown appendTo="body" [options]="playerBackgroundsOptions" [(ngModel)]="config.playerBackgrounds">
+          <!-- <p-dropdown appendTo="body" [options]="playerBackgroundsOptions" [formControl]="config.playerBackgrounds">
             <ng-template let-item pTemplate="selectedItem">
               {{item.label | translate}}
             </ng-template>
@@ -157,7 +161,30 @@
           {{ 'settings.appearance.coloredValues.summary' | translate }}
         </summary>
         <div class="input-wrap">
-          <p-inputSwitch [(ngModel)]="config.coloredValues"></p-inputSwitch>
+          <p-inputSwitch [formControl]="monitorConfig.coloredValues"></p-inputSwitch>
+        </div>
+      </article>
+      <article>
+        <caption>
+          {{ 'settings.appearance.soloStats.caption' | translate }}
+        </caption>
+        <summary>
+          {{ 'settings.appearance.soloStats.summary' | translate }}
+        </summary>
+        <div class="input-wrap p-inputgroup">
+          <p-multiSelect [style]="{ minWidth: '200px' }"
+                         [appendTo]="'body'"
+                  [options]="soloStatsOptions"
+                         [formControl]="monitorConfig.soloStats"
+                         [showToggleAll]="true"
+                         [placeholder]="'settings.appearance.soloStats.placeholder' | translate">
+            <ng-template let-types pTemplate="selectedItems">
+              <span>{{'settings.appearance.soloStats.itemsSelected' | translate:{count: types.length} }}</span>
+            </ng-template>
+            <ng-template let-type pTemplate="item">
+              {{type.label$ | async}}
+            </ng-template>
+          </p-multiSelect>
         </div>
       </article>
       <article>
@@ -169,14 +196,14 @@
           <a (click)="showExaplanationDialog = true">{{'settings.appearance.teamWinrate.explanation' | translate}}</a>
         </summary>
         <p-dialog [header]="'settings.appearance.teamWinrate.explanation' | translate"
-          [(visible)]="showExaplanationDialog" [style]="{'max-width': '600px'}" [modal]="true">
+                  [(visible)]="showExaplanationDialog" [style]="{'max-width': '600px'}" [modal]="true">
           <p externalLink>
-            <strong>Average (Mean) and Median</strong> <br />
+            <strong>Average (Mean) and Median</strong> <br/>
             <a
-              href="https://www.purplemath.com/modules/meanmode.htm">https://www.purplemath.com/modules/meanmode.htm</a>
+                    href="https://www.purplemath.com/modules/meanmode.htm">https://www.purplemath.com/modules/meanmode.htm</a>
           </p>
           <p>
-            <strong>Weighted</strong> <br />
+            <strong>Weighted</strong> <br/>
             Weighted calculates the average by taking all wins divided by all battles, so that players with less battles
             have less impact on the end result. However, it caps the battles at 40. Meaning all players with more than
             40 battles are weighted equally.
@@ -195,11 +222,46 @@ weighted_WR = total_wins/total_battles
         </pre>
         </p-dialog>
         <div class="input-wrap">
-          <p-selectButton [options]="teamWinrateOptions" [(ngModel)]="config.teamWinrate">
+          <p-selectButton [options]="teamWinrateOptions" [formControl]="monitorConfig.teamWinrate">
             <ng-template let-item>
-              <span class="ui-button-text ui-clickable ng-star-inserted">{{item.label | translate}}</span>
+              <span class="p-button-text p-clickable ng-star-inserted">{{item.label$ | async}}</span>
             </ng-template>
           </p-selectButton>
+        </div>
+      </article>
+      <article>
+        <caption>
+          {{ 'settings.screenshots.showWowsKarma.caption' | translate }}
+        </caption>
+        <summary externalLink [innerHTML]="'settings.screenshots.showWowsKarma.summary' | translate | sanitizeHtml">
+        </summary>
+        <div class="input-wrap">
+          <p-inputSwitch [formControl]="monitorConfig.showWowsKarma"></p-inputSwitch>
+        </div>
+      </article>
+    </section>
+    <section *isDesktop>
+      <h3>{{ 'settings.screenshots.title' | translate }}</h3>
+      <article>
+        <caption>
+          {{ 'settings.screenshots.anonymScreenshot.caption' | translate }}
+        </caption>
+        <summary>
+          {{ 'settings.screenshots.anonymScreenshot.summary' | translate }}
+        </summary>
+        <div class="input-wrap">
+          <p-inputSwitch [formControl]="monitorConfig.anonymScreenshot"></p-inputSwitch>
+        </div>
+      </article>
+      <article>
+        <caption>
+          {{ 'settings.screenshots.screenshotPath.caption' | translate }}
+        </caption>
+        <summary>
+          {{ 'settings.screenshots.screenshotPath.summary' | translate }}
+        </summary>
+        <div class="input-wrap">
+          <app-file-picker [control]="monitorConfig.screenshotPath"></app-file-picker>
         </div>
       </article>
     </section>
@@ -213,13 +275,8 @@ weighted_WR = total_wins/total_battles
           {{ 'settings.miscellaneous.overwriteReplaysDirectory.summary' | translate }}
         </summary>
         <div class="input-wrap">
-          <div class="ui-inputgroup">
-            <input pInputText [title]="config.overwriteReplaysDirectory" type="text" [disabled]="true"
-              [(ngModel)]="config.overwriteReplaysDirectory">
-            <button *ngIf="config.overwriteReplaysDirectory" (click)="config.overwriteReplaysDirectory = ''" pButton
-              type="button" icon="pi pi-times"></button>
-            <button pButton type="button" icon="pi pi-folder" (click)="selectReplaysPath()"></button>
-          </div>
+          <app-file-picker [control]="monitorConfig.overwriteReplaysDirectory"
+                           [defaultPath]="settingsService.form.selectedDirectory.model"></app-file-picker>
         </div>
       </article>
     </section>

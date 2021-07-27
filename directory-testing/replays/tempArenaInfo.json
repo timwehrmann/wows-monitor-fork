@@ -1,0 +1,143 @@
+{
+  "matchGroup": "cooperative",
+  "gameMode": 7,
+  "clientVersionFromExe": "0,10,6,4181350",
+  "scenarioUiCategoryId": 2,
+  "mapDisplayName": "18_NE_ice_islands",
+  "mapId": 11,
+  "clientVersionFromXml": "0,10,6,4181350",
+  "weatherParams": {
+    "0": [
+      "PCOW003_Cloudy"
+    ],
+    "1": [
+      "PCOW008_Morning"
+    ]
+  },
+  "playersPerTeam": 9,
+  "duration": 1200,
+  "gameLogic": "Domination",
+  "name": "9x9",
+  "scenario": "Domination_3point_Coop",
+  "playerID": 0,
+  "vehicles": [
+    {
+      "shipId": 4180588304,
+      "relation": 0,
+      "id": 268604257,
+      "name": "ObnoxiousPotato"
+    },
+    {
+      "shipId": 3752769328,
+      "relation": 1,
+      "id": 402736933,
+      "name": "Yak15g"
+    },
+    {
+      "shipId": 4292818736,
+      "relation": 1,
+      "id": 268454407,
+      "name": "Deathtone13"
+    },
+    {
+      "shipId": 4182718192,
+      "relation": 1,
+      "id": 402712744,
+      "name": "_IronPig_"
+    },
+    {
+      "shipId": 4065212112,
+      "relation": 1,
+      "id": 402779177,
+      "name": "Nova4g"
+    },
+    {
+      "shipId": 4181637104,
+      "relation": 1,
+      "id": 402695627,
+      "name": "maryleftover"
+    },
+    {
+      "shipId": 4272830448,
+      "relation": 1,
+      "id": 268595506,
+      "name": "7DeadlySlins"
+    },
+    {
+      "shipId": 4180588304,
+      "relation": 2,
+      "id": 268625135,
+      "name": ":Wright:"
+    },
+    {
+      "shipId": 4272830448,
+      "relation": 2,
+      "id": 268625136,
+      "name": ":Buchan:"
+    },
+    {
+      "shipId": 4264441840,
+      "relation": 1,
+      "id": 268506417,
+      "name": "RJ_LH"
+    },
+    {
+      "shipId": 4264441840,
+      "relation": 2,
+      "id": 268625138,
+      "name": ":Knight:"
+    },
+    {
+      "shipId": 4181637072,
+      "relation": 2,
+      "id": 268625139,
+      "name": ":Zenker:"
+    },
+    {
+      "shipId": 4065212112,
+      "relation": 2,
+      "id": 268625140,
+      "name": ":Goltz:"
+    },
+    {
+      "shipId": 4292818736,
+      "relation": 2,
+      "id": 268625141,
+      "name": ":Tourville:"
+    },
+    {
+      "shipId": 3752769328,
+      "relation": 2,
+      "id": 268625142,
+      "name": ":Warrender:"
+    },
+    {
+      "shipId": 4182718192,
+      "relation": 2,
+      "id": 268625143,
+      "name": ":Tegetthoff:"
+    },
+    {
+      "shipId": 4281284304,
+      "relation": 1,
+      "id": 268568954,
+      "name": "FTAKamikaze"
+    },
+    {
+      "shipId": 4181669872,
+      "relation": 2,
+      "id": 268625137,
+      "name": ":Scheer:"
+    }
+  ],
+  "gameType": "CooperativeBattle",
+  "dateTime": "26.07.2021 19:50:15",
+  "mapName": "spaces/18_NE_ice_islands",
+  "playerName": "ObnoxiousPotato",
+  "scenarioConfigId": 86,
+  "teamsCount": 2,
+  "logic": "Domination",
+  "playerVehicle": "PHSC109-Johan-de-Witt",
+  "battleDuration": 1200,
+  "mapBorder": null
+}

@@ -1,8 +1,8 @@
 /* Mobile first queries */
 
 .centered-logo-wrapper {
-  height: 100vh;
   display: flex;
+  flex: 1;
   align-items: center;
   justify-content: center;
 
@@ -22,8 +22,8 @@
       transform: translateX(-1.5em);
     }
 
-    .ui-progressbar {
-      height: .3em;
+    .p-progressbar {
+      height: .3rem;
     }
   }
 }
@@ -32,13 +32,13 @@
 @media (min-width: 400px) {}
 
 /* Larger than phablet */
-@media (min-width: 550px) {}
+@media (min-width: 576px) {}
 
 /* Larger than tablet */
-@media (min-width: 750px) {}
+@media (min-width: 768px) {}
 
 /* Larger than desktop */
-@media (min-width: 1000px) {}
+@media (min-width: 992px) {}
 
 /* Larger than Desktop HD */
 @media (min-width: 1200px) {}

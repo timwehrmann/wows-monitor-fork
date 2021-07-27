@@ -1,12 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { LoadingBarModule,LOADING_BAR_CONFIG } from '@ngx-loading-bar/core';
-import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
-import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
+import { LOADING_BAR_CONFIG, LoadingBarModule } from '@ngx-loading-bar/core';
 import { TranslateModule } from '@ngx-translate/core';
+import { SharedModule } from '@shared/shared.module';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
+import { BlockUIModule } from 'primeng/blockui';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { DropdownModule } from 'primeng/dropdown';
@@ -14,11 +14,13 @@ import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { InputTextModule } from 'primeng/inputtext';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { ProgressBarModule } from 'primeng/progressbar';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
 import { SidebarModule } from 'primeng/sidebar';
+import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
-import { SharedModule } from 'src/app/shared/shared.module';
 import { AnalyticsInfoComponent } from './analytics-info/analytics-info.component';
 import { ChangelogModule } from './changelogs/changelog/changelog.module';
 import { MainRoutingModule } from './main-routing.module';
@@ -68,7 +70,12 @@ import { TopbarComponent } from './topbar/topbar.component';
     ScrollPanelModule,
     ToastModule,
     LoadingBarModule,
-    InputSwitchModule
+    InputSwitchModule,
+    ReactiveFormsModule,
+    TableModule,
+    BlockUIModule,
+    ProgressSpinnerModule,
+    ProgressBarModule
   ],
   providers: [
     DialogService,
@@ -81,4 +88,5 @@ import { TopbarComponent } from './topbar/topbar.component';
     AnalyticsInfoComponent
   ]
 })
-export class MainModule { }
+export class MainModule {
+}

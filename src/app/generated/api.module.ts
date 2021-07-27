@@ -1,13 +1,18 @@
 /* tslint:disable */
+/* eslint-disable */
 import { NgModule, ModuleWithProviders, SkipSelf, Optional } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ApiConfiguration, ApiConfigurationParams } from './api-configuration';
 
 import { ChangelogService } from './services/changelog.service';
 import { ClansService } from './services/clans.service';
+import { ConfigService } from './services/config.service';
 import { DownloadsService } from './services/downloads.service';
-import { QrService } from './services/qr.service';
+import { IdentityService } from './services/identity.service';
+import { ProfileService } from './services/profile.service';
+import { SignalRService } from './services/signal-r.service';
 import { StatsService } from './services/stats.service';
+import { WebConnectService } from './services/web-connect.service';
 
 /**
  * Module that provides all services and configuration.
@@ -19,14 +24,18 @@ import { StatsService } from './services/stats.service';
   providers: [
     ChangelogService,
     ClansService,
+    ConfigService,
     DownloadsService,
-    QrService,
+    IdentityService,
+    ProfileService,
+    SignalRService,
     StatsService,
+    WebConnectService,
     ApiConfiguration
   ],
 })
 export class ApiModule {
-  static forRoot(params: ApiConfigurationParams): ModuleWithProviders {
+  static forRoot(params: ApiConfigurationParams): ModuleWithProviders<ApiModule> {
     return {
       ngModule: ApiModule,
       providers: [

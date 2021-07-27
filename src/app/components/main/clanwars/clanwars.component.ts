@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { BaseComponent } from '@components/base.component';
 import { faChevronUp } from '@fortawesome/free-solid-svg-icons';
+import { ClanSeasonAppModel, RatingTeam, Region } from '@generated/models';
+import { ClansService } from '@generated/services';
+import { ScrollService } from '@services/scroll.service';
 import { SelectItem } from 'primeng/api';
-import { ClanSeason, Region } from 'src/app/generated/models';
-import { ClansService } from 'src/app/generated/services';
-import { ScrollService } from 'src/app/services/scroll.service';
-import { BaseComponent } from '../../base.component';
 
 @Component({
   selector: 'app-clanwars',
@@ -72,15 +72,15 @@ export class ClanwarsComponent extends BaseComponent implements OnInit, OnDestro
   teamOptions: SelectItem[] = [
     {
       label: 'Alpha',
-      value: 1
+      value: RatingTeam.Alpha
     },
     {
       label: 'Bravo',
-      value: 2
+      value: RatingTeam.Bravo
     }
   ];
 
-  seasonOptions: ClanSeason[] = [];
+  seasonOptions: ClanSeasonAppModel[] = [];
 
   faChevronUp = faChevronUp;
 

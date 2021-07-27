@@ -1,13 +1,15 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { BaseComponent } from '@components/base.component';
 import { faFolder } from '@fortawesome/free-solid-svg-icons';
+import { DirectoryService, DirectoryServiceToken } from '@interfaces/directory.service';
+import { SignalrStatus } from '@interfaces/signalr';
+import { TranslateService } from '@ngx-translate/core';
+import { ApiService } from '@services/api.service';
+import { SettingsService } from '@services/settings.service';
+import { GatewayService } from '@services/gateway.service';
 import { DialogService } from 'primeng/dynamicdialog';
 import { combineLatest, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { BaseComponent } from 'src/app/components/base.component';
-import { DirectoryService, DirectoryServiceToken } from 'src/app/interfaces/directory.service';
-import { SignalrService, SignalrServiceToken, SignalrStatus } from 'src/app/interfaces/signalr.service';
-import { ApiService } from 'src/app/services/api.service';
-import { Config } from 'src/config/config';
 import { PathPickerDialogComponent } from './path-picker-dialog/path-picker-dialog.component';
 
 @Component({
@@ -20,11 +22,12 @@ export class PathPickerComponent extends BaseComponent implements OnInit, OnDest
   showPathInfo = false;
 
   constructor(
+    private translateService: TranslateService,
     private dialogService: DialogService,
     private apiService: ApiService,
-    @Inject(SignalrServiceToken) private signalRService: SignalrService,
+    private signalrService: GatewayService,
     @Inject(DirectoryServiceToken) public directoryService: DirectoryService,
-    public config: Config
+    public settingsService: SettingsService
   ) {
     super();
   }
@@ -32,7 +35,7 @@ export class PathPickerComponent extends BaseComponent implements OnInit, OnDest
   ngOnInit() {
     let subscribtion: Subscription;
 
-    this.signalRService.$socketStatus.subscribe(s => {
+    this.signalrService.gatewayStatus$.subscribe(s => {
       if (s === SignalrStatus.Connected) {
         subscribtion = combineLatest([
           this.directoryService.$changeDetected,
@@ -43,7 +46,7 @@ export class PathPickerComponent extends BaseComponent implements OnInit, OnDest
               this.logError('Error during api call', err);
             });
           } else {
-            this.signalRService.resetInfo();
+            this.signalrService.resetInfo();
           }
         });
       } else {
@@ -59,7 +62,10 @@ export class PathPickerComponent extends BaseComponent implements OnInit, OnDest
       styleClass: 'dialogPopup desktop',
       header: this.translateService.instant('pathPicker.dialogHeader'),
       showHeader: true,
-      dismissableMask: true
+      dismissableMask: true,
+      style: {
+        maxWidth: '600px'
+      }
     });
   }
 

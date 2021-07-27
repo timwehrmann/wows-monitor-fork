@@ -1,13 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { CardModule } from 'primeng/card';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
+import { MultiSelectModule } from 'primeng/multiselect';
 import { SelectButtonModule } from 'primeng/selectbutton';
-import { SharedModule } from 'src/app/shared/shared.module';
+import { SharedModule } from '@shared/shared.module';
 import { SettingsRoutingModule } from './settings-routing.module';
 import { SettingsComponent } from './settings.component';
 import { DropdownModule } from 'primeng/dropdown';
@@ -34,7 +35,9 @@ import { OverlayPanelModule } from 'primeng/overlaypanel';
     ButtonModule,
     FontAwesomeModule,
     DialogModule,
-    OverlayPanelModule
+    OverlayPanelModule,
+    ReactiveFormsModule,
+    MultiSelectModule
   ],
   providers: [
   ]

@@ -1,15 +1,17 @@
 import { Pipe, PipeTransform } from '@angular/core';
+import { CwClanSearchAppModel } from '@generated/models';
+import { ClansService } from '@generated/services';
 import { Observable, of } from 'rxjs';
-import { ClansService } from 'src/app/generated/services';
 
 @Pipe({
   name: 'resolveClans'
 })
 export class ResolveClansPipe implements PipeTransform {
 
-  constructor(private clansService: ClansService) { }
+  constructor(private clansService: ClansService) {
+  }
 
-  transform(arr: number[]): Observable<any[]> {
+  transform(arr: number[]): Observable<CwClanSearchAppModel[]> {
     if (!arr || arr.length === 0) {
       return of([]);
     }

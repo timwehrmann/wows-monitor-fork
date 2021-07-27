@@ -1,48 +1,14 @@
 @import '_variables.scss';
 
 app-topbar {
-  display: flex;
-  flex-direction: row;
-  position: sticky;
   box-sizing: border-box;
-  padding: .5em;
-  padding-right: 1em;
   background: $secondaryDarkColor;
   height: 55px;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
   overflow: hidden;
-  align-items: center;
-}
-
-.left-top {
-  flex: 1;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-
-.states {
-  flex: none;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-
-.forcepvp,
-app-connection {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  p-inputswitch{
-    margin-left: .5em;
-  }
 }
 
 .iconWrapper {
-  // height: 45px;
-  display: flex;
-  align-items: center;
-  // float: left;
   transition: color 0.3s ease-in-out;
 
   fa-icon {
@@ -66,22 +32,45 @@ app-connection {
 
   &.state-2,
   &.state-3,
+  &.state-6,
   &.status-2 {
     color: $warningColor;
   }
 }
 
-.states {
-  float: right;
+body .p-sidebar {
+  padding: 0;
+  border: 0;
 
-  .iconWrapper {
-    margin-left: .5em;
+  display: flex;
+
+  .p-sidebar-content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+  }
+
+  app-menu {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
   }
 }
 
-body .ui-sidebar {
-  padding: 0;
-  border: 0;
+.p-blockui.p-component-overlay {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.region-select-close {
+  position: absolute !important;
+  top: 3rem;
+  right: 1rem;
+}
+
+.region-select-icon {
+  height: 7rem;
+  cursor: pointer;
+  transition: all .3s ease-in-out;
 }
 
 #menuIconWrapper {
@@ -95,24 +84,28 @@ body .ui-sidebar {
 }
 
 .menu-topbar {
-  display: block;
   background: $secondaryDarkColor;
   height: 55px;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
-  padding: .5em 1em;
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
   border-bottom: 1px solid $secondaryColor;
   cursor: pointer;
 
   img {
-    height: 35px;
-    margin-right: 1em;
+    height: 100%;
   }
+}
 
-  span {
-    font-size: 1.2em;
+.menu-statusbar{
+  cursor: default;
+  background: $secondaryDarkColor;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid $secondaryColor;
+  font-size: .8rem;
+
+  .statusbar-users{
+    fa-icon{
+      color: $dangerColor;
+    }
   }
 }
 
@@ -128,72 +121,41 @@ body .ui-sidebar {
       a {
         display: block;
         box-sizing: border-box;
-        padding: 1em;
+        padding: 1rem;
         color: $textColor;
+        text-decoration: none;
 
         .badge {
-          margin-left: .25em;
+          margin-left: .25rem;
         }
       }
 
       &.active a {
-        border-left: .5em solid $primaryColor;
-        padding-left: .5em;
+        border-left: .5rem solid $primaryColor;
+        padding-left: .5rem;
         background: $secondaryColor;
       }
 
       &:not(.active) a:hover {
-        border-left: .25em solid $primaryColor;
-        padding-left: .75em;
+        border-left: .25rem solid $primaryColor;
+        padding-left: .75rem;
         background: $secondaryColor;
       }
 
 
-      border-bottom: 1px solid $secondaryColor;
+      border-bottom: 1px solid $secondaryLightColor;
     }
-  }
-}
-
-.statusOverlay-0,
-.statusOverlay-2 {
-  right: 1em;
-  left: 1em;
-}
-
-.qrPopup {
-
-  h2 {
-    text-align: center;
-  }
-
-  ol {
-    margin: 0;
-    margin-bottom: 1em;
-    padding-left: 2em;
   }
 }
 
 app-qr {
   img {
     width: 100%;
-    margin-bottom: 1em;
   }
 }
 
 app-qr-scan {
   height: 100%;
-}
-
-app-qr,
-app-qr-scan {
-  display: block;
-
-  fa-icon {
-    position: absolute;
-    top: .5em;
-    right: 1em;
-    cursor: pointer;
-  }
 }
 
 .qr-scan-wrapper {
@@ -202,17 +164,35 @@ app-qr-scan {
   grid-template-rows: auto minmax(250px, 1fr);
 }
 
+.menu-user-section{
+  border-top: 1px solid $secondaryLightColor;
+  padding: 1rem;
+  transition: all .3s ease-in-out;
+
+  &.authenticated{
+    cursor: pointer;
+    &:hover{
+      background: $secondaryColor;
+    }
+  }
+}
+
 /* Larger than mobile */
-@media (min-width: 400px) {}
+@media (min-width: 400px) {
+}
 
 /* Larger than phablet */
-@media (min-width: 550px) {}
+@media (min-width: 576px) {
+}
 
 /* Larger than tablet */
-@media (min-width: 750px) {}
+@media (min-width: 768px) {
+}
 
 /* Larger than desktop */
-@media (min-width: 1000px) {}
+@media (min-width: 992px) {
+}
 
 /* Larger than Desktop HD */
-@media (min-width: 1200px) {}
+@media (min-width: 1200px) {
+}

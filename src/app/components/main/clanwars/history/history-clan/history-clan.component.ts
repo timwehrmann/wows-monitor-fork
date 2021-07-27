@@ -1,12 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { faRedo, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
-import { BaseComponent } from 'src/app/components/base.component';
-import { ClanInfo } from 'src/app/generated/models';
-import { ClansService } from 'src/app/generated/services';
-import { ClanWarsHistoryService } from 'src/app/services/clanwars-history.service';
-import { map, skip } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { BaseComponent } from '@components/base.component';
+import { faArrowLeft, faRedo } from '@fortawesome/free-solid-svg-icons';
+import { ClanInfoAppModel } from '@generated/models';
+import { CwHistoryListService } from '@services/cw-history-list.service';
+import { combineLatest } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-history-clan',
@@ -17,25 +16,26 @@ export class HistoryClanComponent extends BaseComponent implements OnInit, OnDes
   faRedo = faRedo;
   faLeft = faArrowLeft;
 
-  clan: ClanInfo;
+  routeClan = this.route.data.pipe(map(d => d.clan as ClanInfoAppModel));
 
   constructor(
-    public service: ClanWarsHistoryService,
-    public route: ActivatedRoute,
-    private router: Router
+    public service: CwHistoryListService,
+    public route: ActivatedRoute
   ) {
     super();
   }
 
   ngOnInit() {
-    this.route.data.pipe(this.untilDestroy()).subscribe(d => this.clan = d.clan);
-    this.service.form.season.valueChanges
+    combineLatest([
+      this.routeClan,
+      this.service.form.season.valueChanges
+    ])
       .pipe(this.untilDestroy())
-      .subscribe(v => {
-        if (v) {
-          this.router.navigateByUrl(`/home/clanwars/${this.clan.id}/${v}`);
+      .subscribe(([clan, seasonId]) => {
+        if (seasonId) {
+          this.router.navigate(['clanwars', clan.id, seasonId], { state: { skipHistory: true } });
         } else {
-          this.router.navigateByUrl(`/home/clanwars/${this.clan.id}`);
+          this.router.navigate(['clanwars', clan.id], { state: { skipHistory: true } });
         }
       });
   }

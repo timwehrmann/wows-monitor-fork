@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { BaseComponent } from '../../base.component';
-import { appConfig } from 'src/config/app.config';
+import { BaseComponent } from '@components/base.component';
+import { staticValues } from '@environments/static-values';
 
 @Component({
   selector: 'app-about',
@@ -8,8 +8,8 @@ import { appConfig } from 'src/config/app.config';
 })
 export class AboutComponent extends BaseComponent implements OnInit {
 
-  get version(){
-    return appConfig.version;
+  get version() {
+    return staticValues.version;
   }
 
   constructor() {
