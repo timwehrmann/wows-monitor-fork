@@ -58,8 +58,8 @@
     "universal-analytics": "^0.4.23"
   },
   "devDependencies": {
-    "@angular-builders/custom-webpack": "^12.1.0",
-    "@angular-devkit/build-angular": "12.0.4",
+    "@angular-builders/custom-webpack": "^15.0.0",
+    "@angular-devkit/build-angular": "16.0.0",
     "@angular-devkit/schematics": "^12.0.4",
     "@angular/animations": "12.0.4",
     "@angular/cdk": "8.2.3",
